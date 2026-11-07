@@ -279,6 +279,20 @@ section{padding-block:64px}
 .fr-list .date{color:var(--gold);margin-right:8px}
 .fr-list a{color:var(--ink)}
 @media (max-width:700px){.fr-gen{grid-template-columns:1fr}}
+.lineage{list-style:none;margin:0;padding:0;position:relative;display:grid;gap:14px}
+.lineage::before{content:"";position:absolute;left:27px;top:10px;bottom:10px;width:4px;border-radius:2px;background:linear-gradient(var(--bark-dark),var(--bark))}
+.lin{display:grid;grid-template-columns:58px 1fr;gap:16px;position:relative}
+.lin .gen{width:58px;height:58px;border-radius:50%;background:var(--surface);border:3px solid var(--teal);display:grid;place-items:center;font-family:var(--type);font-weight:700;font-size:1.05rem;color:var(--ink);position:relative;z-index:1}
+.lin .gen small{display:block;font-size:.55rem;font-weight:400;letter-spacing:.08em;color:var(--muted);margin-top:-6px}
+.lin .card{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:14px 18px;min-width:0}
+.lin .card .meta{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;font-family:var(--type);font-size:.76rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.lin .card h3{font-size:1.35rem;margin:4px 0 6px}
+.lin .card p{margin:0;font-size:.97rem}
+.ev-badge{border-radius:3px;padding:0 6px;font-size:.7rem;border:1px solid currentColor}
+.ev-badge.doc{color:var(--sage)} .ev-badge.fam{color:var(--gold)} .ev-badge.tree{color:var(--rust)}
+.road{margin-top:30px;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:18px 22px}
+.road h3{font-size:1.5rem;margin-bottom:6px}
+@media (max-width:600px){.lin{grid-template-columns:44px 1fr;gap:10px}.lin .gen{width:44px;height:44px;font-size:.9rem}.lineage::before{left:20px}}
 footer{border-top:1px solid var(--line);padding-block:30px;color:var(--muted);font-size:.9rem}
 
 /* ---------- drawer ---------- */
@@ -311,7 +325,7 @@ footer{border-top:1px solid var(--line);padding-block:30px;color:var(--muted);fo
       Stacy Family Tree
     </a>
     <nav class="sections" aria-label="Sections">
-      <a href="#tree">Tree</a><a href="#stories">Stories</a><a href="#timeline">Timeline</a><a href="#journey">Journey</a><a href="#people">People</a><a href="#gallery">Photos</a><a href="#records">Newspapers</a><a href="#notes">Research notes</a><a href="#sources">Sources</a>
+      <a href="#tree">Tree</a><a href="#stacy-line">Stacy line</a><a href="#stories">Stories</a><a href="#timeline">Timeline</a><a href="#journey">Journey</a><a href="#people">People</a><a href="#gallery">Photos</a><a href="#records">Newspapers</a><a href="#notes">Research notes</a><a href="#sources">Sources</a>
     </nav>
     <div class="tools">
       <button class="iconbtn" id="shake" type="button">Shake the tree</button>
@@ -391,6 +405,24 @@ footer{border-top:1px solid var(--line);padding-block:30px;color:var(--muted);fo
       <h3 style="font-size:1.8rem;margin-top:44px">The branches</h3>
       <p class="muted prose" style="margin:6px 0 0">Every family group named in the papers, children in birth order.</p>
       <div class="branches" id="branches"></div>
+    </div>
+  </section>
+
+  <!-- ================= STACY LINE ================= -->
+  <section id="stacy-line">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <div class="eyebrow">Father to son, 1609 to today</div>
+          <h2>The Stacy line</h2>
+          <p>Thirteen generations of Stacys, from a Wiltshire parish in the reign of James I to Jeremiah. Each step names the Stacy ancestor and his wife; select a name to open the full record. The badge on each generation shows how firmly it is documented.</p>
+        </div>
+      </div>
+      <ol class="lineage" id="lineage"></ol>
+      <div class="road">
+        <h3>The road west</h3>
+        <p class="muted prose" id="road"></p>
+      </div>
     </div>
   </section>
 
@@ -690,7 +722,7 @@ const PEOPLE = [
   {id:"violet_r", name:"Violet (Riffe) Lester", fam:"T", par:["larkin","amanda"], role:"Hattie’s sister", src:["HOBIT"]},
   {id:"stella_r", name:"Stella (Riffe) Lester", fam:"T", par:["larkin","amanda"], role:"Hattie’s sister", src:["HOBIT"]},
   {id:"pearl_r", name:"Pearl Riffe", fam:"T", par:["larkin","amanda"], role:"Hattie’s sister", src:["HOBIT"]},
-  {id:"bill_s", name:"William “Bill” Stacy Sr.", fam:"T", b:"1891", d:"1970", sp:["eva_b"], role:"Lonnie Sr.’s father · Trevor’s great-great-grandfather", notes:["Father of ten with Eva Blankenship. After Eva died in 1938 he had three more sons: Sterial, Estil and Carl."], src:["USER"]},
+  {id:"bill_s", name:"William G. “Bill” Stacy Sr.", short:"Bill Stacy Sr.", fam:"T", b:"1891", bp:"Blackey, Buchanan County, Virginia", d:"1970", par:["richard_c","sarah_cooper"], sp:["eva_b","laura_m"], role:"Lonnie Sr.’s father · Trevor’s great-great-grandfather", notes:["Son of Richard Conley Stacy and Sarah Cooper of Blackey, Buchanan County, Virginia; one of eight children.","Father of ten with Eva Blankenship, born 1910–1935. After Eva died in 1938 he married Laura Mullins of the Hanover–Ikes Fork area, and they had three sons: Sterial, Estil and Carl."], src:["USER","WEB"]},
   {id:"eva_b", name:"Eva (Blankenship) Stacy", fam:"T", b:"1892", d:"1938", sp:["bill_s"], role:"Lonnie Sr.’s mother · Trevor’s great-great-grandmother", notes:["Mother of ten; her youngest, Jennie Marie, was about three when Eva died."], src:["USER"]},
   {id:"birtha_s", name:"Birtha May (Stacy) Blankenship", fam:"T", b:"1910", d:"1982", par:["bill_s","eva_b"], role:"Lonnie Sr.’s sister", src:["USER"]},
   {id:"ocie_s", name:"Ocie (Stacy) Blankenship", fam:"T", b:"1912", d:"2003", par:["bill_s","eva_b"], role:"Lonnie Sr.’s sister", src:["USER"]},
@@ -701,9 +733,9 @@ const PEOPLE = [
   {id:"ance_s", name:"Anderson “Ance” Stacy", fam:"T", b:"1927", d:"1987", par:["bill_s","eva_b"], role:"Lonnie Sr.’s brother", src:["USER"]},
   {id:"sarah_s", name:"Sarah Francis (Stacy) Riffe", fam:"T", b:"1929", d:"2016", par:["bill_s","eva_b"], role:"Lonnie Sr.’s sister", notes:["Married a Riffe, a second tie between the Stacy and Riffe families."], src:["USER"]},
   {id:"jennie_s", name:"Jennie Marie (Stacy) Daugherty", fam:"T", b:"1935", d:"2021", par:["bill_s","eva_b"], role:"Lonnie Sr.’s sister", src:["USER"]},
-  {id:"sterial_s", name:"Sterial Stacy", fam:"T", b:"1939", d:"2016", par:["bill_s"], role:"Lonnie Sr.’s half-brother", src:["USER"]},
-  {id:"estil_s", name:"Estil Stacy", fam:"T", b:"1941", d:"2009", par:["bill_s"], role:"Lonnie Sr.’s half-brother", src:["USER"]},
-  {id:"carl_s", name:"Carl Stacy", fam:"T", b:"1944", d:"2025", par:["bill_s"], role:"Lonnie Sr.’s half-brother", notes:["An honorary pallbearer at his sister-in-law Hattie’s funeral in 2011."], src:["USER","HOBIT"]},
+  {id:"sterial_s", name:"Sterial Stacy", fam:"T", b:"1939", d:"2016", par:["bill_s","laura_m"], role:"Lonnie Sr.’s half-brother", src:["USER"]},
+  {id:"estil_s", name:"Estil Stacy", fam:"T", b:"Oct. 4, 1941", bp:"Hanover, West Virginia", d:"2009", par:["bill_s","laura_m"], role:"Lonnie Sr.’s half-brother", notes:["His obituary names his parents as “the late William and Laura Mullins Stacy.”"], src:["USER","WEB"]},
+  {id:"carl_s", name:"Carl Stacy", fam:"T", b:"1944", d:"2025", par:["bill_s","laura_m"], role:"Lonnie Sr.’s half-brother", notes:["An honorary pallbearer at his sister-in-law Hattie’s funeral in 2011."], src:["USER","HOBIT"]},
   {id:"larry_s", first:"Larry", name:"William “Larry” Stacy", fam:"T", b:"1945", d:"2016", par:["lonnie_sr","hattie"], role:"Ticky’s brother · Baisden", notes:["Of Baisden in 2011; companion Jennifer Rollyson."], src:["OBIT","HOBIT"]},
   {id:"randall_s", first:"Randall", name:"Randall Stacy", fam:"T", par:["lonnie_sr","hattie"], role:"Ticky’s brother · Hanover", notes:["Married to Gladys."], src:["OBIT","HOBIT"]},
   {id:"sue_s", first:"Sue", name:"Sue (Stacy) Egnor", fam:"T", par:["lonnie_sr","hattie"], role:"Ticky’s sister · Winfield", notes:["Married to Roger Egnor."], src:["OBIT","HOBIT"]},
@@ -740,6 +772,32 @@ const PEOPLE = [
   {id:"robin_c", first:"Robin", name:"Robin Joy Campbell", fam:"K", par:["cledith_sr","barbara"], role:"Bub’s sister · Princeton, W.Va.", src:["WEB"]},
   {id:"john_davis", name:"John Davis", fam:"K", role:"Ruthie’s brother · Caryville, Tennessee", notes:["Named as Bub’s brother-in-law in his 2024 obituary. As Ruthie’s brother, he is a key to finding their Davis parents."], src:["WEB"]},
   {id:"danny_c", first:"Danny", name:"Danny Lee Campbell", fam:"K", par:["cledith_sr","barbara"], role:"Bub’s brother · Richmond, Kentucky", notes:["Married to Margie."], src:["WEB"]},
+  // ---------------- STACY LINE (deep ancestry) ----------------
+  {id:"laura_m", name:"Laura (Mullins) Stacy", fam:"T", sp:["bill_s"], role:"Bill Stacy Sr.’s second wife", notes:["Of Ikes Fork, Wyoming County. Mother of Sterial, Estil and Carl, and stepmother to Lonnie Sr. and his brothers and sisters."], src:["WEB"]},
+  {id:"richard_c", name:"Richard Conley Stacy", fam:"T", b:"Aug. 15, 1854", bp:"Buchanan County, Virginia", d:"Oct. 2, 1927", dp:"Blackey, Buchanan County, Virginia · age 73", par:["big_billy","rebecca_b"], sp:["sarah_cooper"], role:"Bill Sr.’s father · Trevor’s 3rd-great-grandfather", notes:["One of the youngest of the roughly 40 children of William “Big Billy” Stacy, by his third wife, Rebecca Blankenship.","Lived and died at Blackey (Hurley), Buchanan County, Virginia, where the family stayed for generations.","Father of eight with Sarah Cooper, born about 1879–1901: Edward, Spicey, Rachel, Martha, William G. (Bill), Nancy Jane, James Harvey and Elihu Boyd."], src:["WEB"]},
+  {id:"sarah_cooper", name:"Sarah (Cooper) Stacy", fam:"T", b:"May 1864", bp:"Buchanan County, Virginia", d:"Mar. 15, 1944", dp:"Blackey, Buchanan County, Virginia", sp:["richard_c"], role:"Bill Sr.’s mother · Trevor’s 3rd-great-grandmother", src:["WEB"]},
+  {id:"edward_rc", name:"Edward Stacy", fam:"T", par:["richard_c","sarah_cooper"], role:"Bill Sr.’s brother", src:["WEB"]},
+  {id:"spicey_rc", name:"Spicey (Stacy) Blankenship", fam:"T", b:"1885", d:"1961", par:["richard_c","sarah_cooper"], role:"Bill Sr.’s sister", notes:["Named for her aunt Spicey Stacy (1855–1897). Bill later gave the name to his own daughter, Spicey Stacy Mullins."], src:["WEB"]},
+  {id:"rachel_rc", name:"Rachel Stacy", fam:"T", par:["richard_c","sarah_cooper"], role:"Bill Sr.’s sister", src:["WEB"]},
+  {id:"martha_rc", name:"Martha Stacy", fam:"T", par:["richard_c","sarah_cooper"], role:"Bill Sr.’s sister", src:["WEB"]},
+  {id:"nancy_rc", name:"Nancy Jane Stacy", fam:"T", par:["richard_c","sarah_cooper"], role:"Bill Sr.’s sister", src:["WEB"]},
+  {id:"jharvey_rc", name:"James Harvey Stacy", fam:"T", par:["richard_c","sarah_cooper"], role:"Bill Sr.’s brother", src:["WEB"]},
+  {id:"elihu_rc", name:"Elihu Boyd Stacy", fam:"T", b:"c. 1901", par:["richard_c","sarah_cooper"], role:"Bill Sr.’s youngest brother", src:["WEB"]},
+  {id:"big_billy", name:"William “Big Billy” Stacy", short:"“Big Billy” Stacy", fam:"T", b:"1801", bp:"Russell County, Virginia", d:"c. 1870", dp:"Knox Creek, Buchanan County, Virginia", bur:"Big Sandy River Cemetery, Buchanan County, Virginia", par:["simon_jr","eliz_davidson"], sp:["rebecca_p","sarah_mallett","rebecca_b"], role:"Trevor’s 4th-great-grandfather · the family giant", notes:["Called “Big Billy” because he stood about 6 feet 6 inches and weighed some 300 to 350 pounds.","Married Rebecca Proffitt in Floyd County, Kentucky, on June 28, 1819. He also fathered children with Sarah Mallett, who gave them the surnames Davis or Proffitt.","After Rebecca Proffitt died he married Rebecca Blankenship in Tazewell County, Virginia, on May 9, 1843 (some records say 1845); she was 27 years younger.","Fathered somewhere between 33 and 40 children with his three partners, born in Kentucky and Virginia between 1818 and 1864. Richard Conley Stacy, Trevor’s ancestor, was born in 1854.","Sold 100 acres on Quicksand Creek in Perry County, Kentucky, in July 1835 and moved the family over the mountains to what became Buchanan County, Virginia (then Tazewell County), where he farmed on Knox Creek of the Tug Fork."], src:["WEB"]},
+  {id:"rebecca_p", name:"Rebecca (Proffitt) Stacy", fam:"M", b:"Apr. 15, 1802", d:"c. 1845", sp:["big_billy"], role:"Big Billy’s first wife", notes:["Married William Stacy June 28, 1819, Floyd County, Kentucky."], src:["WEB"]},
+  {id:"sarah_mallett", name:"Sarah Mahulda (Mallett) Davis", fam:"M", b:"1793", d:"c. 1850–55", sp:["big_billy"], role:"Mother of several of Big Billy’s children", notes:["Family legend says she vowed to have his children when he married Rebecca instead; their children carried the surnames Davis or Proffitt."], src:["WEB"]},
+  {id:"rebecca_b", name:"Rebecca (Blankenship) Stacy", fam:"T", b:"1828", bp:"Tazewell County, Virginia", d:"1899", dp:"Buchanan County, Virginia", par:["conley_b","martha_lester"], sp:["big_billy"], role:"Richard Conley’s mother · Trevor’s 4th-great-grandmother", notes:["Married Big Billy Stacy in Tazewell County in 1843, at about 15; mother of about a dozen of his children.","Through her the family descends from the Virginia Blankenships, back to Ralph Blankenship, born in England in 1662, who died in Henrico County, Virginia, in 1714. (Bill Stacy’s wife Eva was a Blankenship too.)"], src:["WEB"]},
+  {id:"conley_b", name:"Conley B. Blankenship", fam:"T", b:"1785", bp:"Chesterfield County, Virginia", d:"1870", dp:"Tazewell County, Virginia", sp:["martha_lester"], role:"Rebecca’s father · 5th-great-grandfather", notes:["Son of William Blankenship (1761–1835, died Pike County, Ky.) and Molly Trent. The name Conley passed to his grandson Richard Conley Stacy."], src:["WEB"]},
+  {id:"martha_lester", name:"Martha (Lester) Blankenship", fam:"T", b:"May 29, 1788", d:"1870", dp:"Buchanan County, Virginia", sp:["conley_b"], role:"Rebecca’s mother · 5th-great-grandmother", notes:["Daughter of William Calvin Gilford Lester (1771–1842, died at Panther, McDowell County) and Rachel Scaggs."], src:["WEB"]},
+  {id:"simon_jr", name:"Simon Stacy Jr.", fam:"T", b:"c. 1762", bp:"Frederick County, Virginia", d:"Oct. 14, 1822", dp:"Perry County, Kentucky", par:["simon_sr","judith_t"], sp:["eliz_davidson"], role:"Revolutionary War patriot · 5th-great-grandfather", notes:["Born around the time his father died. Named in the 1784 Surry County, North Carolina, will of his stepfather, Thomas Pettit.","Revolutionary War: served in 1781 in Captain Daniel Trigg’s militia company of Montgomery County, Virginia, alongside his brothers Benjamin and John; recognized as a patriot by the Daughters of the American Revolution.","Married Elizabeth Davidson about 1790 at Moccasin Creek, Russell County, Virginia (an earlier wife, Sarah, appears in some records).","Moved the family into eastern Kentucky, where he died in Perry County in 1822. Children included George, James Downey, William (“Big Billy”), Sarah, Benjamin Franklin, Shadrach (“One-Eyed Shade”), Mary Jane and Scetha."], src:["WEB"]},
+  {id:"eliz_davidson", name:"Elizabeth (Davidson) Stacy", fam:"T", b:"1770", d:"1835", dp:"Perry County, Kentucky", sp:["simon_jr"], role:"5th-great-grandmother", notes:["Daughter of James Davidson of Russell County, Virginia, a Revolutionary patriot, and Margaret Goldman, whose family came from the Palatinate in Germany."], src:["WEB"]},
+  {id:"simon_sr", name:"Simon Stacy Sr.", fam:"T", b:"c. 1716–18", bp:"Stafford County, Virginia", d:"1762", dp:"Frederick County, Virginia", par:["john_s1695","dorothy_s"], sp:["judith_t"], role:"6th-great-grandfather", notes:["Married Judith Tolson on August 22, 1741, in Overwharton Parish, Stafford County, Virginia. The parish register records the births of their older children: Sarah (1742), Benjamin (1744), Seth (1746), Mary (1749) and Sinai (1751).","Moved to Frederick County, in the Shenandoah Valley, in the early 1750s with the allied Combs family; in 1759 Mason Combs witnessed a record he signed.","The Stacys and Combses traveled together and married each other so often that, as one descendant put it, “They married a lot.”"], src:["WEB"]},
+  {id:"judith_t", name:"Judith (Tolson) Stacy Pettit", fam:"T", b:"c. 1720", bp:"Northumberland County, Virginia", d:"after 1796", dp:"probably Sullivan County, Tennessee", sp:["simon_sr"], role:"6th-great-grandmother", notes:["Daughter of Benjamin Tolson and Mary Oldham of Stafford County.","Widowed in 1762, she married Thomas Pettit (died 1784, Surry County, N.C.) and moved with her children’s families to Rowan County, N.C. (by 1768), Montgomery and Russell Counties, Virginia, and Sullivan County, Tennessee.","A grandson testified in 1853 that “grandmother Judah Stacy” raised her granddaughter Mary Everage."], src:["WEB"]},
+  {id:"john_s1695", name:"John Stacy", fam:"T", b:"c. 1695", bp:"Stafford County, Virginia", d:"May 26, 1783", dp:"Frederick County, Virginia", par:["simon_imm","eliz_kemp"], sp:["dorothy_s"], role:"7th-great-grandfather (per compiled trees)", notes:["Shown in WikiTree as Simon Sr.’s father. One Stacy researcher instead records a John Stacy Sr. as Simon’s brother; see Research Notes."], src:["WEB"]},
+  {id:"dorothy_s", name:"Dorothy Stacy", fam:"T", d:"Feb. 5, 1751", dp:"Stafford County, Virginia", sp:["john_s1695"], role:"7th-great-grandmother (per compiled trees)", src:["WEB"]},
+  {id:"simon_imm", name:"Simon Stacy", short:"Simon Stacy, the immigrant", fam:"T", b:"Apr. 1640", bp:"Swindon, Wiltshire, England", d:"Jan. 23, 1718", dp:"Charles Parish, York County, Virginia", par:["william_1609"], sp:["eliz_kemp"], role:"The immigrant · 8th-great-grandfather (per compiled trees)", notes:["Born in Wiltshire, England, he crossed to the Chesapeake and settled in Charles Parish, York County, Virginia, where he died in 1718. His wife Elizabeth Kemp was born in Calvert County, Maryland.","This is where most researchers place the family’s arrival in America. The early generations come from compiled trees, so they are less certain than the later ones."], src:["WEB"]},
+  {id:"eliz_kemp", name:"Elizabeth (Kemp) Stacy", fam:"T", b:"1663", bp:"Calvert County, Maryland", d:"Apr. 14, 1718", dp:"Charles Parish, York County, Virginia", sp:["simon_imm"], role:"8th-great-grandmother (per compiled trees)", src:["WEB"]},
+  {id:"william_1609", name:"William Stacy", short:"William Stacy of Wiltshire", fam:"T", b:"Nov. 1609", bp:"Broad Blunsdon, Highworth, Wiltshire, England", d:"Jan. 1694", dp:"Donhead St. Mary, Wiltshire, England", role:"The earliest known Stacy · 9th-great-grandfather (per compiled trees)", notes:["The deepest Stacy ancestor in the compiled records: born in 1609 in the parish of Highworth in north Wiltshire, near Swindon, a contemporary of the Pilgrims; he lived to about 84."], src:["WEB"]},
   // ---------------- MARRIED IN (Stallings spouses) ----------------
   {id:"rosabelle", name:"Rosabelle Warren Stallings", fam:"M", sp:["lorenzo"], role:"Wife of Lorenzo", notes:["Sister of Ben Warren and Mary Warren Watson. Visited Waterflow, met Lorenzo, and married him soon after."], src:["MEM"]},
   {id:"edgar_w", name:"Edgar Warren", fam:"M", sp:["mary_loretta"], role:"Husband of Loretta Stallings", notes:["Arrived June 1914 with Loretta and their son Leo."], src:["MEM"]},
@@ -951,7 +1009,21 @@ const EVENTS = [
  {y:2024, d:"Feb. 17", t:"Michael Folz dies in Evansville.", f:"F", who:["michael_f"]},
  {y:1935, d:"Mar. 10", t:"Barbara Ann Hively born in Charleston, West Virginia.", f:"K", who:["barbara"]},
  {y:1866, d:"Jan. 17", t:"Larkin Riffe born in Wyoming County to Bill Riffe and Sarah Beverly.", f:"T", who:["larkin"]},
- {y:1891, t:"William “Bill” Stacy Sr. born.", f:"T", who:["bill_s"]},
+ {y:1609, d:"Nov.", t:"William Stacy born at Broad Blunsdon, Highworth, Wiltshire, England, the earliest known Stacy ancestor.", f:"T", who:["william_1609"]},
+ {y:1640, d:"Apr.", t:"Simon Stacy, the family’s immigrant to Virginia, born near Swindon, Wiltshire.", f:"T", who:["simon_imm"]},
+ {y:1718, d:"Jan. 23", t:"Simon Stacy dies in Charles Parish, York County, Virginia.", f:"T", who:["simon_imm"]},
+ {y:1741, d:"Aug. 22", t:"Simon Stacy Sr. marries Judith Tolson in Overwharton Parish, Stafford County, Virginia.", f:"T", who:["simon_sr","judith_t"]},
+ {y:1762, t:"Simon Stacy Sr. dies in Frederick County, Virginia; his son Simon Jr. is born about this time.", f:"T", who:["simon_sr","simon_jr"]},
+ {y:1781, t:"Simon Stacy Jr. serves in Captain Daniel Trigg’s Montgomery County militia in the Revolutionary War.", f:"T", who:["simon_jr"]},
+ {y:1790, t:"Simon Stacy Jr. marries Elizabeth Davidson at Moccasin Creek, Russell County, Virginia.", f:"T", who:["simon_jr","eliz_davidson"]},
+ {y:1801, t:"William “Big Billy” Stacy born in Russell County, Virginia.", f:"T", who:["big_billy"]},
+ {y:1819, d:"June 28", t:"Big Billy Stacy marries Rebecca Proffitt in Floyd County, Kentucky.", f:"T", who:["big_billy","rebecca_p"]},
+ {y:1822, d:"Oct. 14", t:"Simon Stacy Jr. dies in Perry County, Kentucky.", f:"T", who:["simon_jr"]},
+ {y:1835, d:"July", t:"Big Billy sells his land on Quicksand Creek, Perry County, Kentucky, and moves to the Tug Fork country of Virginia.", f:"T", who:["big_billy"]},
+ {y:1843, d:"May 9", t:"Big Billy marries Rebecca Blankenship in Tazewell County, Virginia.", f:"T", who:["big_billy","rebecca_b"]},
+ {y:1854, d:"Aug. 15", t:"Richard Conley Stacy born in Buchanan County, Virginia.", f:"T", who:["richard_c"]},
+ {y:1891, t:"William G. “Bill” Stacy born at Blackey to Richard Conley and Sarah Cooper Stacy.", f:"T", who:["bill_s","richard_c","sarah_cooper"]},
+ {y:1927, d:"Oct. 2", t:"Richard Conley Stacy dies at Blackey, Virginia.", f:"T", who:["richard_c"]},
  {y:1919, d:"Oct. 17", t:"Lonnie Stacy Sr. born at Blackey, Buchanan County, Virginia, to Bill and Eva Stacy.", f:"T", who:["lonnie_sr","bill_s","eva_b"]},
  {y:1938, t:"Eva Blankenship Stacy dies, leaving ten children.", f:"T", who:["eva_b"]},
  {y:1946, t:"Lonnie Stacy Sr. marries Hattie Margaret Riffe.", f:"T", who:["lonnie_sr","hattie"]},
@@ -1003,6 +1075,10 @@ const PLACES = [
 ];
 
 const NOTES = [
+ {h:"How sure is the Stacy line?", s:"Evidence", p:"Generations 7–13 (Richard Conley Stacy to Jeremiah) rest on obituaries, grave records and family records. Generations 4–6 (Simon Sr., Simon Jr., Big Billy) rest on parish registers, militia rolls, wills and land and marriage records summarized by Stacy researchers. Generations 1–3 (William of Wiltshire, Simon the immigrant, John) come from compiled online trees and have not been proven from original records.", v:"Treat generations 1–3 as the best current theory."},
+ {h:"John Stacy: father or brother of Simon Sr.?", s:"Conflict", p:"WikiTree makes John Stacy (c. 1695–1783) the father of Simon Stacy Sr. The Combs-Stacy research group records a John Stacy Sr. as Simon Sr.’s brother, active in the same counties.", v:"Shown as father, flagged. Stafford and Frederick County deeds would settle it."},
+ {h:"Big Billy’s marriages and children", s:"Conflict", p:"Sources give his marriage to Rebecca Blankenship as 1843 or 1845, and his children as 33, 35 or about 40. Some children of Sarah Mallett carried the surnames Davis or Proffitt.", v:"Shown as May 9, 1843, and “about 35 to 40.”"},
+ {h:"Eva Blankenship’s parents", s:"Open", p:"Bill Stacy’s wife Eva Blankenship (1892–1938) is not yet linked to her parents. Because Bill’s own grandmother was also a Blankenship, Bill and Eva may have been distant cousins.", v:"The 1900 and 1910 Buchanan County censuses would show her family."},
  {h:"“Hart Award” or Hunt Award", s:"Resolved", p:"Trevor’s Charlotte bio calls his 2014 honor the “Hart Award.” The WV Sports Writers Association, the Herald-Dispatch and Spring Valley all call it the Hunt Award: the Ken Hunt Award for the state’s top lineman, renamed the Joe Stydahar Award in 2015. The WVSWA list misprints the 2014 winner as “Jeremy Stacy.”", v:"Shown as the Ken Hunt Award."},
  {h:"Only two three-time first-team all-staters", s:"Verified", p:"Spring Valley’s own all-state history lists every Timberwolf named first-team Class AAA all-state since 2001. Only two names appear three times: Trevor Stacy (2012, 2013, 2014) and Doug Nester (2016, 2017, 2018).", v:"Confirmed from the school’s list. Trevor’s profile shows the 2012 and 2013 honors; the 2014 selection appears on the school’s all-state list."},
  {h:"Larkin Riffe’s birth year", s:"Conflict", p:"Find a Grave gives Jan. 17, 1866 (age 82). His 1948 death register gives Jan. 17, 1864 (age 83).", v:"Shown as 1866; the 1870 or 1880 census would help."},
@@ -1046,6 +1122,18 @@ function drawGallery(){
 }
 document.addEventListener("click",e=>{const b=e.target.closest("[data-zoom]"); if(!b) return; b.closest(".photo").classList.toggle("big");});
 const RECORDS = [
+ {title:"Richard Conley Stacy (1854–1927) and ancestors", pub:"WikiTree · Stacy-978", region:"Online trees", kind:"Online tree", status:"found", url:"https://www.wikitree.com/wiki/Stacy-978", who:["richard_c","sarah_cooper","big_billy","rebecca_b"], sum:"Richard Conley Stacy, born Aug. 15, 1854, Buchanan Co., Va.; died Oct. 2, 1927, Blackey. Wife Sarah Cooper (1864–1944). Children include William G. (1891–1970). His WikiTree ancestry runs 10 generations, to William Stacy of Wiltshire (b. 1609)."},
+ {title:"William “Big Billy” Stacy (1801–c. 1870)", pub:"WikiTree · Stacy-553", region:"Online trees", kind:"Online tree", status:"found", url:"https://www.wikitree.com/wiki/Stacy-553", who:["big_billy","rebecca_p","sarah_mallett","rebecca_b"], sum:"Three wives or partners and about 40 children. Married Rebecca Proffitt June 28, 1819, Floyd Co., Ky., and Rebecca Blankenship May 9, 1843, Tazewell Co., Va. Died at Knox Creek, Buchanan Co."},
+ {title:"William “Big Billy” Stacy", pub:"Find a Grave · memorial 216672076", region:"Online trees", kind:"Grave memorial", status:"found", url:"https://www.findagrave.com/memorial/216672076/william-stacy", who:["big_billy"], sum:"Buried at Big Sandy River Cemetery, Buchanan County. Nicknamed for his size (6’6”, about 350 pounds); fathered 35 children; moved to Buchanan County about 1835."},
+ {title:"William “Billy” Stacy, Sr.", pub:"Geni", region:"Online trees", kind:"Online tree", status:"lead", url:"https://www.geni.com/people/William-Stacy-Sr/6000000009265072401", who:["big_billy"], sum:"Profile describing his move to the part of Tazewell County that became Buchanan County, and his many children."},
+ {title:"Simon Stacy Jr. (1762–1822)", pub:"Find a Grave · memorial 216672575", region:"Online trees", kind:"Grave memorial", status:"found", url:"https://www.findagrave.com/memorial/216672575/simon-stacy", who:["simon_jr"], sum:"Lists DAR-recognized Revolutionary War service in Capt. Daniel Trigg’s militia company, 1781."},
+ {title:"Patriot Simon Stacey", pub:"tfkrha.org", region:"Online trees", kind:"Article", status:"found", url:"https://www.tfkrha.org/Military/Military_Stacy_S.php", who:["simon_jr","eliz_davidson"], sum:"Born 1762, Moccasin Creek, Va.; served 1781 in Capt. Daniel Trigg’s company, Montgomery Co., Va.; died Oct. 14, 1822, Perry Co., Ky. Wife Elizabeth Davidson, daughter of proven patriot James Davidson and Margaret Goldman."},
+ {title:"Combs-Stacy Connections", pub:"Combs-Coombs-etc. Research Group", region:"Online trees", kind:"Family history", status:"found", url:"https://combs-families.org/combs/assoc/stacy.htm", who:["simon_sr","judith_t","simon_jr","eliz_davidson"], sum:"Detailed history of Simon and Judith Tolson Stacy: their 1741 Overwharton Parish marriage and children’s births, the moves to Frederick Co., Rowan Co. N.C., Montgomery and Russell Cos., and Judith’s later life, with oral history from descendants."},
+ {title:"Simon Stacy Sr. (c. 1718–1762)", pub:"WikiTree · Stacy-203", region:"Online trees", kind:"Online tree", status:"found", url:"https://www.wikitree.com/wiki/Stacy-203", who:["simon_sr","judith_t"], sum:"Married Judith Tolson Aug. 22, 1741, Stafford Co., Va.; eight children; died before Sept. 8, 1762, Frederick Co."},
+ {title:"Simon Stacy (1640–1718), the immigrant", pub:"WikiTree · Stacy-1476", region:"Online trees", kind:"Online tree", status:"lead", url:"https://www.wikitree.com/wiki/Stacy-1476", who:["simon_imm","eliz_kemp","william_1609","john_s1695"], sum:"Born April 1640, Swindon, Wiltshire; died Jan. 23, 1718, Charles Parish, York Co., Va. Wife Elizabeth Kemp. Father: William Stacy (1609–1694) of Wiltshire (Stacy-1534)."},
+ {title:"Lee Otis Stacy (1917–1985)", pub:"Find a Grave · memorial 38738516", region:"Oceana", kind:"Grave memorial", status:"found", url:"https://www.findagrave.com/memorial/38738516/lee-otis-stacy", who:["lee_s","laura_m","spicey_s","hubbard_s"], sum:"Retired coal miner, member of the Church of the Living God at Jolo. Names his stepmother, Mrs. Laura Stacy of Ikes Fork, and his sister Spicey Mullins."},
+ {title:"Estil Stacy (1941–2009)", pub:"Find a Grave · memorial 90736631", region:"Oceana", kind:"Grave memorial", status:"found", url:"https://www.findagrave.com/memorial/90736631/estil-stacy", who:["estil_s","bill_s","laura_m"], sum:"Born Oct. 4, 1941, Hanover, W.Va., son of the late William and Laura Mullins Stacy."},
+ {title:"Spicey Stacy Blankenship (1885–1961)", pub:"Find a Grave · memorial 74620177", region:"Online trees", kind:"Grave memorial", status:"found", url:"https://www.findagrave.com/memorial/74620177/spicey-blankenship", who:["spicey_rc","richard_c","sarah_cooper"], sum:"Daughter of Richard Conley Stacy (b. Aug. 15, 1854, Blackey) and Sarah Cooper."},
  {title:"Spring Valley’s Stacy adds to West Virginia connections with Charlotte", pub:"WV MetroNews (Garrett Cullen)", date:"June 2, 2014", region:"Huntington", kind:"Article", status:"found", url:"https://wvmetronews.com/2014/06/02/spring-valleys-stacy-adds-to-west-virginia-connections-with-charlotte/", who:["trevor"], sum:"Trevor “Shaq” Stacy, 6-5, 290, commits to Charlotte. Coach Brad Dingess: “about every Ivy League school had offered him … He wants to be an engineer … He’s able to drive and pancake kids like I’ve not seen in a long time.” First-team all-state in both of the past two seasons."},
  {title:"Cato misses VAD because of CFL commitment (Victory Awards Dinner)", pub:"The Herald-Dispatch", date:"May 17, 2015", region:"Huntington", kind:"Article", status:"found", url:"https://www.herald-dispatch.com/sports/cato-misses-vad-because-of-cfl-commitment/article_0de7053e-845b-5398-950b-eed4ae392b04.html", who:["trevor"], sum:"At the 69th Victory Awards Dinner in Wheeling, Trevor Stacy receives the Hunt Award as the state’s prep lineman of the year: “It’s an honor to win this. I have so many people to thank who made this possible.” (The article calls him a Marshall recruit; he signed with Charlotte.)"},
  {title:"Overview of 2015 in-state high school football signings", pub:"WV MetroNews", date:"Feb. 4, 2015", region:"Huntington", kind:"Article", status:"found", url:"https://wvmetronews.com/2015/02/04/overview-of-2015-instate-high-school-football-signings/comment-page-2", who:["trevor"], sum:"National Signing Day: Trevor Stacy, Spring Valley, OL, 6-5, 290, signs with Charlotte, part of “one of the more significant classes of signees in the state.”"},
@@ -1204,9 +1292,11 @@ const TREE_STACYRIFFE = [
   {id:"eva_b", x:385, y:395, from:"lonnie_sr", label:"Eva Blankenship"},
   {id:"larkin", x:615, y:395, from:"hattie"},
   {id:"amanda", x:820, y:420, from:"hattie", label:"Amanda “Mandy” Lee"},
-  {id:"stacypar", x:150, y:250, from:"bill_s", unknown:"Bill Stacy’s parents"},
-  {id:"blankpar", x:400, y:220, from:"eva_b", unknown:"Blankenship parents"},
-  {id:"bill_r", x:575, y:215, from:"larkin"},
+  {id:"richard_c", x:110, y:255, from:"bill_s", label:"Richard Conley Stacy"},
+  {id:"sarah_cooper", x:255, y:165, from:"bill_s", label:"Sarah Cooper"},
+  {id:"blankpar", x:415, y:265, from:"eva_b", unknown:"Blankenship parents"},
+  {id:"big_billy", x:120, y:75, from:"richard_c"},
+  {id:"bill_r", x:595, y:215, from:"larkin"},
   {id:"sarah_bev", x:750, y:255, from:"larkin", label:"Sarah Beverly"},
   {id:"leepar", x:895, y:320, from:"amanda", unknown:"Lee parents"}
 ];
@@ -1246,7 +1336,7 @@ const TREES = {
 Object.assign(TREES,{
   stacyriffe:{nodes:TREE_STACYRIFFE, couple:["lonnie_sr","hattie"], married:"married 1946", left:["LONNIE SR.’S SIDE · STACY & BLANKENSHIP","var(--teal)"], right:["HATTIE’S SIDE · RIFFE & LEE","var(--teal)"], kidsLabel:"Their seven children",
     title:"The Stacy & Riffe family", short:"Stacy & Riffe", desc:"Trevor’s great-grandparents Lonnie Stacy Sr. and Hattie Margaret Riffe, with their parents and grandparents above and their seven children below.", aria:"Family tree of Lonnie Stacy Sr. and Hattie Riffe Stacy",
-    intro:"Lonnie Stacy Sr. was born in 1919 at Blackey, Buchanan County, Virginia, the son of Bill Stacy and Eva Blankenship. Hattie Margaret Riffe was born in 1925 at Ikes Fork, Wyoming County, to Larkin and Amanda Riffe, who farmed at Wild Cat, Hanover. They married in 1946, lived in Justice, and raised seven children. Their son Ticky is Trevor’s grandfather."},
+    intro:"Lonnie Stacy Sr. was born in 1919 at Blackey, Buchanan County, Virginia, the son of Bill Stacy and Eva Blankenship, and grandson of Richard Conley Stacy and great-grandson of “Big Billy” Stacy. The Stacy line goes back 13 generations from Jeremiah; see “The Stacy line.” Hattie Margaret Riffe was born in 1925 at Ikes Fork, Wyoming County, to Larkin and Amanda Riffe, who farmed at Wild Cat, Hanover. They married in 1946, lived in Justice, and raised seven children. Their son Ticky is Trevor’s grandfather."},
   prichard:{nodes:TREE_PRICHARD, couple:["boyd","gracie"], married:"Kopperston, Wyoming County", left:["BOYD’S SIDE · PRICHARD","var(--teal)"], right:["GRACIE’S SIDE · JAMES","var(--teal)"], kidsLabel:"Children named so far",
     title:"The Prichard & James family", short:"Prichard & James", desc:"Trevor’s great-grandparents Boyd Prichard Sr. and Gracie James of the Kopperston coal camp, with the children named so far. Their own parents are not yet in the records.", aria:"Family tree of Boyd Prichard Sr. and Gracie James Prichard",
     intro:"Boyd Prichard Sr. and Gracie James raised a large family in Kopperston, a Wyoming County coal camp: at least five daughters and a son. Their daughter Delma married Ticky Stacy in 1966 and is Trevor’s grandmother. Their own parents, and the remaining children’s names, are still to be found."},
@@ -1372,6 +1462,31 @@ function drawTree(){
   }
 }
 
+/* ---------- Stacy line ---------- */
+const LINEAGE = [
+ {g:1, who:["william_1609"], years:"1609–1694", place:"Highworth & Donhead St. Mary, Wiltshire, England", ev:"tree", text:"The earliest Stacy in the compiled records, born in north Wiltshire the decade before the Mayflower sailed."},
+ {g:2, who:["simon_imm","eliz_kemp"], years:"1640–1718", place:"Swindon, England → York County, Virginia", ev:"tree", text:"Simon crossed the Atlantic to the Chesapeake and married Elizabeth Kemp of Calvert County, Maryland. He died in Charles Parish, York County, in 1718."},
+ {g:3, who:["john_s1695","dorothy_s"], years:"c. 1695–1783", place:"Stafford & Frederick Counties, Virginia", ev:"tree", text:"John and Dorothy raised their family in Stafford County on the Potomac. Researchers disagree on whether John was Simon Sr.’s father or his brother."},
+ {g:4, who:["simon_sr","judith_t"], years:"c. 1716–1762", place:"Overwharton Parish, Stafford Co. → Frederick Co., Virginia", ev:"doc", text:"Married August 22, 1741, in Overwharton Parish, whose register records their children’s births. Moved to the Shenandoah Valley with the Combs family; Judith carried the family on to North Carolina, Virginia and Tennessee after Simon died."},
+ {g:5, who:["simon_jr","eliz_davidson"], years:"c. 1762–1822", place:"Montgomery & Russell Cos., Virginia → Perry Co., Kentucky", ev:"doc", text:"Revolutionary War patriot in Captain Daniel Trigg’s Montgomery County militia, 1781. Married Elizabeth Davidson about 1790 and took the family into the Kentucky mountains."},
+ {g:6, who:["big_billy","rebecca_b"], years:"1801–c. 1870", place:"Perry Co., Kentucky → Knox Creek, Buchanan Co., Virginia", ev:"doc", text:"“Big Billy,” six and a half feet tall, father of some 35 to 40 children by three women. In 1835 he crossed from Kentucky to the Tug Fork country of what became Buchanan County, Virginia."},
+ {g:7, who:["richard_c","sarah_cooper"], years:"1854–1927", place:"Blackey, Buchanan County, Virginia", ev:"doc", text:"Richard Conley Stacy, named for his Blankenship grandfather Conley, farmed at Blackey near Hurley and raised eight children with Sarah Cooper."},
+ {g:8, who:["bill_s","eva_b"], years:"1891–1970", place:"Blackey, Virginia → Hanover, Wyoming Co., West Virginia", ev:"fam", text:"Bill and Eva had ten children before Eva died in 1938; with Laura Mullins he had three more sons. The family crossed into the West Virginia coalfields."},
+ {g:9, who:["lonnie_sr","hattie"], years:"1919–1981", place:"Justice, Mingo County, West Virginia", ev:"fam", text:"Born at Blackey; married Hattie Riffe of Ikes Fork in 1946 and raised seven children in Justice."},
+ {g:10, who:["lonnie","delma"], years:"1946–2012", place:"Oceana, Wyoming County, West Virginia", ev:"fam", text:"“Ticky,” Navy veteran and coal auger operator, married Delma Prichard on New Year’s Eve 1966."},
+ {g:11, who:["rick","annette"], years:"", place:"Lavalette & Huntington, West Virginia", ev:"fam", text:"Rick married Annette “Annie” Folz, uniting the Stacys with the Folz, Zoglman and Stallings families."},
+ {g:12, who:["trevor","sara"], years:"b. 1996", place:"Huntington, West Virginia", ev:"fam", text:"Trevor, a three-time all-state lineman who came home to coach football and robotics at Spring Valley, married Sara Beth Campbell, daughter of Pastor Bub Campbell."},
+ {g:13, who:["jeremiah"], years:"", place:"Huntington, West Virginia", ev:"fam", text:"Jeremiah, the thirteenth generation."}
+];
+const ROAD = "England (Wiltshire) → York County, Virginia (by c. 1690) → Stafford County, Virginia (1700s) → Frederick County, Virginia (1750s) → Rowan County, North Carolina (1768) → Montgomery County, Virginia (1781) → Russell County, Virginia (c. 1790) → Perry County, Kentucky (c. 1800–1835) → Knox Creek and Blackey, Buchanan County, Virginia (1835–1930s) → Hanover and Justice, West Virginia (1940s) → Oceana, Wyoming County (1960s) → Huntington (today). Nearly every move followed the frontier south and west along the Great Wagon Road and then up the creeks of the Big Sandy and Tug Fork.";
+function drawLineage(){
+  const evl={doc:["Documented","doc"],fam:["Family records","fam"],tree:["Compiled trees","tree"]};
+  $("#lineage").innerHTML=LINEAGE.slice().reverse().map(L=>`<li class="lin"><div class="gen">${L.g}<small>GEN</small></div><div class="card"><div class="meta"><span>${esc(L.years)}</span><span>${esc(L.place)}</span><span class="ev-badge ${evl[L.ev][1]}">${evl[L.ev][0]}</span></div>
+    <h3>${L.who.filter(id=>P[id]).map(id=>esc(P[id].name)).join(" &amp; ")}</h3><p>${esc(L.text)}</p>
+    <div class="chips">${L.who.filter(id=>P[id]).map(id=>`<button class="chip" type="button" data-p="${id}"><span class="sw" style="background:${FAM[P[id].fam].color}"></span>${esc(P[id].short||P[id].name)}</button>`).join("")}</div></div></li>`).join("");
+  $("#road").textContent=ROAD;
+}
+
 /* ---------- Family record (per tree) ---------- */
 function drawFamilyRecord(){
   const T=TREES[curTree], couple=T.couple.filter(id=>P[id]);
@@ -1429,7 +1544,8 @@ function drawBranches(){
     "lonnie_sr":"Seven children, raised in Justice.",
     "larkin":"Hattie and her seven brothers and sisters, raised at Wild Cat, Hanover.",
     "bill_s":"Ten children with Eva Blankenship, born 1910–1935, in Buchanan County, Virginia, and nearby.",
-    "bill_s+":"Bill’s three sons after Eva’s death in 1938.",
+    "bill_s+laura_m":"Bill’s three sons with Laura Mullins, after Eva’s death in 1938.",
+    "richard_c":"Eight children of Richard Conley Stacy and Sarah Cooper, born about 1879–1901 at Blackey.",
     "angela":"Trevor’s first cousin on the Stacy side.",
     "jeff_b":"Trevor’s first cousins on the Stacy side.",
     "boyd":"Delma, her brother Mack and at least four sisters; three are named so far.",
@@ -1438,12 +1554,12 @@ function drawBranches(){
     "luther_c":"Cledith Sr. and his brothers and sister.",
     "w_hively":"Barbara had five sisters and two brothers; only Jerry is named so far."
   };
-  const order = ["trevor","rick","clay","lonnie","jeff_b","angela","lonnie_sr","larkin","bill_s","boyd","cledith_sr","w_hively","joseph_z","henry","bud","charles_f","gene","wp_coomes","wm_martin","lt","lorenzo","robert_j","edgar_w"];
+  const order = ["trevor","rick","clay","lonnie","jeff_b","angela","lonnie_sr","larkin","bill_s","richard_c","boyd","cledith_sr","w_hively","joseph_z","henry","bud","charles_f","gene","wp_coomes","wm_martin","lt","lorenzo","robert_j","edgar_w"];
   groups.sort((a,b)=>{const ia=order.indexOf(a[0]),ib=order.indexOf(b[0]);return (ia<0?99:ia)-(ib<0?99:ib)});
   $("#branches").innerHTML = groups.map(par=>{
     const names = par.map(id=>P[id]).map(p=>p.short||p.name);
     const kids = PEOPLE.filter(c=>c.par.length===par.length && par.every(x=>c.par.includes(x))).sort((a,b)=>(yearOf(a.b)||9999)-(yearOf(b.b)||9999));
-    const note = (par.length===1 && extra[par[0]+"+"]) || extra[par[0]] || "";
+    const note = extra[par.join("+")] || (par.length===1 && extra[par[0]+"+"]) || extra[par[0]] || "";
     return `<article class="branch"><div class="eyebrow" style="color:${FAM[P[par[0]].fam].color}">${FAM[P[par[0]].fam].label}</div>
       <h3>${esc(names.join(" & "))}</h3><p class="sub">${esc(note)}</p>
       <ul class="kids">${kids.map(k=>`<li><button type="button" data-p="${k.id}"><span class="k-name">${esc(k.name)}${k.role?`<span class="k-note">${esc(k.role)}</span>`:""}</span><span class="k-yr">${esc(span(k))}</span></button></li>`).join("")}</ul></article>`;
@@ -1645,7 +1761,7 @@ $("#shake").addEventListener("click",()=>{ if(!running) setPaused(false); burst(
 drawTree(); if(document.fonts&&document.fonts.ready) document.fonts.ready.then(()=>{ seed=7; drawTree(); });
 { const hk=location.hash.replace(/^#tree-/,"").replace(/^#/,""); if(TREES[hk] && hk!=="stacy") setTree(hk); else if(hk==="zoglman") setTree("zs"); else drawFamilyRecord(); }
 { const sh=document.querySelector(".tree-shell"); if(sh.scrollWidth>sh.clientWidth) sh.scrollLeft=(sh.scrollWidth-sh.clientWidth)/2; }
-drawBranches(); drawChapters(); drawTimeline(); drawMap(); showPlace(); drawDir(); drawNotes(); drawRecords(); drawGallery();
+drawBranches(); drawChapters(); drawTimeline(); drawMap(); showPlace(); drawDir(); drawNotes(); drawRecords(); drawGallery(); drawLineage();
 </script>
 </body>
 </html>
