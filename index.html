@@ -400,7 +400,7 @@ footer{border-top:1px solid var(--line);padding-block:30px;color:var(--muted);fo
         <div class="tp-group" role="group" aria-labelledby="tp-sara">
           <span class="tp-label" id="tp-sara">Sara’s grandparents</span>
           <button class="chip" type="button" data-tree="campbell" aria-pressed="false"><span class="sw" style="background:var(--berry)"></span>Campbell &amp; Hively</button>
-          <button class="chip" type="button" data-tree="davis" aria-pressed="false"><span class="sw" style="background:var(--berry)"></span>Davis</button>
+          <button class="chip" type="button" data-tree="davis" aria-pressed="false"><span class="sw" style="background:var(--berry)"></span>Davis &amp; Francis</button>
         </div>
       </div>
       <div class="tree-shell"><svg id="tree-svg" viewBox="0 0 1000 800" role="group" aria-label="Family tree"></svg></div>
@@ -819,7 +819,10 @@ const PEOPLE = [
   {id:"robin_c", first:"Robin", name:"Robin Joy Campbell", fam:"K", par:["cledith_sr","barbara"], role:"Bub’s sister · Princeton, W.Va.", src:["WEB"]},
   {id:"john_davis", name:"John Davis Jr.", fam:"K", par:["john_davis_sr","mabel_davis"], role:"Ruthie’s brother · Caryville, Tennessee", notes:["Named in both his father’s 2023 obituary and Bub’s 2024 obituary."], src:["WEB"]},
   {id:"john_davis_sr", name:"John William Davis Sr.", short:"John W. Davis Sr.", fam:"K", b:"May 17, 1925", d:"July 31, 2023", dp:"Kenova, West Virginia · age 98", bur:"Hillcrest Cemetery, Kenova", par:["jack_davis","etta_davis"], sp:["mabel_davis","june_davis"], role:"Ruthie’s father · Sara’s grandfather", notes:["Son of Jack and Etta Davis; one of ten children.","Worked more than 40 years at Heiner’s Bakery in Huntington before retiring.","A deacon of Buffalo Valley Baptist Church, with a passion for ministering to the church’s homebound members. Loved hunting, golfing and gardening.","His first wife, Mabel, was the mother of his children, Ruth Ann and John Jr. He later married June McKeand.","Died July 31, 2023, at 98, under Hospice of Huntington’s care. Funeral at Buffalo Valley Baptist Church by the Rev. Tim Jayne; buried at Hillcrest Cemetery, Kenova, the same cemetery where his son-in-law Bub was buried a year later."], src:["WEB"]},
-  {id:"mabel_davis", name:"Mabel Davis", fam:"K", sp:["john_davis_sr"], role:"Ruthie’s mother · Sara’s grandmother", notes:["First wife of John W. Davis Sr. and mother of Ruth Ann and John Jr. She died before 2023; her maiden name and dates are not yet found."], src:["WEB"]},
+  {id:"mabel_davis", name:"Mabel (Francis) Davis", short:"Mabel Francis", fam:"K", par:["george_francis","redith_francis"], sp:["john_davis_sr"], role:"Ruthie’s mother · Sara’s grandmother", notes:["Born Mabel Francis, daughter of George and Redith Francis; sister of Myrtle.","First wife of John W. Davis Sr. and mother of Ruth Ann and John Jr. She died before 2023."], src:["USER","WEB"]},
+  {id:"george_francis", name:"George Francis", fam:"K", sp:["redith_francis"], role:"Mabel’s father · Sara’s great-grandfather", src:["USER"]},
+  {id:"redith_francis", name:"Redith Francis", fam:"K", sp:["george_francis"], role:"Mabel’s mother · Sara’s great-grandmother", notes:["Her maiden name is not yet known."], src:["USER"]},
+  {id:"myrtle_f", name:"Myrtle Francis", fam:"K", par:["george_francis","redith_francis"], role:"Mabel’s sister · Ruthie’s aunt", src:["USER"]},
   {id:"june_davis", name:"June (McKeand) Davis", fam:"M", sp:["john_davis_sr"], role:"John W. Davis Sr.’s second wife · Kenova", src:["WEB"]},
   {id:"jack_davis", name:"Jack Davis", fam:"K", sp:["etta_davis"], role:"John W. Davis Sr.’s father · Sara’s great-grandfather", notes:["Father of ten. Named in his son John’s 2023 obituary."], src:["WEB"]},
   {id:"etta_davis", name:"Etta Davis", fam:"K", sp:["jack_davis"], role:"John W. Davis Sr.’s mother · Sara’s great-grandmother", src:["WEB"]},
@@ -1356,7 +1359,7 @@ const NOTES = [
  {h:"Where was Ticky born?", s:"Conflict", p:"His obituary and Find a Grave say Hanover, Wyoming County. The 1966 marriage license says “Iaeger, McD. Co.” (McDowell County, next door).", v:"Shown as Hanover; a delayed birth certificate would settle it."},
  {h:"A clerk’s slip on the license", s:"Note", p:"The marriage license gives the bride’s father as “Boyd Stacy.” Every other record has Boyd Prichard; the clerk wrote the groom’s surname by mistake.", v:"Read as Boyd Prichard."},
  {h:"Rick Stacy’s brothers and sisters", s:"Resolved", p:"Trevor confirmed his aunts Angela (Stacy) Stewart and Lori (Stacy) Pruitt as Rick’s sisters, daughters of Lonnie and Delma.", v:"Birth order and any other siblings still to add."},
- {h:"Ruthie’s grandparents: Jack, Etta and Mabel’s family", s:"Open", p:"Searched November 2026: obituaries, Find a Grave, WikiTree, the 1950 census index and Kenova-area funeral homes turned up nothing more on Jack and Etta Davis, their parents, or Mabel’s maiden name. Jack and Etta had ten children, born about 1910–1935; the youngest-surviving, James, lived at Apple Grove in Mason County.", v:"The surest route is the free West Virginia Vital Research Records site (wvculture.org): John W. Davis Sr.’s marriage record to Mabel (about 1945–55, Cabell or Wayne County) will give her maiden name and both sets of parents, and Jack’s and Etta’s death certificates will name their parents."},
+ {h:"Ruthie’s grandparents", s:"Open", p:"Trevor confirmed Ruthie’s mother was Mabel Francis, daughter of George and Redith Francis, with a sister Myrtle. Online searches (obituaries, Find a Grave, WikiTree, 1950 census index) have not yet found records for the Francis family or for Jack and Etta Davis’s parents.", v:"WV Vital Research Records (wvculture.org): John W. Davis and Mabel Francis’s marriage record (about 1945–55, Cabell or Wayne County), and death certificates for Mabel, George, Redith, Jack and Etta, would name the next generation."},
  {h:"Ruthie Davis Campbell’s parents", s:"Resolved", p:"Her father’s 2023 obituary names him as John William Davis Sr. (1925–2023) of Kenova, son of Jack and Etta Davis, with his first wife Mabel as the mother of his children.", v:"Mabel’s maiden name and Jack and Etta’s origins are the next things to find."},
  {h:"Helen Irene Turner and the Campbell and Kelly lines", s:"Open", p:"No online record yet names the parents of Helen Irene Turner Hively, Luther Vernon Campbell or Elsie Elizabeth Kelly. Each was in the Charleston area in the 1930s.", v:"The 1940 census and Kanawha County death certificates (on WV Culture’s vital records site) are the best next sources."},
  {h:"Charles A. Folz’s dates", s:"Open", p:"No obituary or grave record for Gene’s father turned up. Online trees put his birth about 1916–17 in Indiana, and a MyHeritage record shows a Charles Folz dying in Evansville on Nov. 4, 1991, at 75.", v:"Check Stella’s Find a Grave page and the Courier & Press for November 1991."},
@@ -1613,7 +1616,10 @@ const TREE_DAVIS = [
   {id:"etta_davis", x:385, y:395, from:"john_davis_sr"},
   {id:"jackpar", x:150, y:250, from:"jack_davis", unknown:"Jack Davis’s parents"},
   {id:"ettapar", x:400, y:220, from:"etta_davis", unknown:"Etta’s parents"},
-  {id:"mabelpar", x:770, y:400, from:"mabel_davis", unknown:"Mabel’s parents"}
+  {id:"george_francis", x:615, y:395, from:"mabel_davis"},
+  {id:"redith_francis", x:820, y:420, from:"mabel_davis"},
+  {id:"georgepar", x:600, y:225, from:"george_francis", unknown:"George’s parents"},
+  {id:"redithpar", x:850, y:260, from:"redith_francis", unknown:"Redith’s parents"}
 ];
 const TREES = {
   stacy:{nodes:TREE_STACY, couple:["trevor","sara"], married:"Trevor & Sara", left:["TREVOR’S SIDE · STACY · PRICHARD · FOLZ","var(--teal)"], right:["SARA’S SIDE · CAMPBELL · HIVELY · DAVIS","var(--berry)"], kidsLabel:"Their son",
@@ -1634,9 +1640,9 @@ Object.assign(TREES,{
   folzmudd:{nodes:TREE_FOLZMUDD, couple:["charles_f","stella"], married:"St. Louis, then Evansville", left:["CHARLES’S SIDE · FOLZ","var(--sky)"], right:["STELLA’S SIDE · MUDD","var(--sky)"], kidsLabel:"Their nine children",
     title:"The Folz & Mudd family", short:"Folz & Mudd", desc:"Trevor’s great-grandparents Charles A. Folz and Stella Mudd of St. Louis and Evansville, with their nine children. Their own parents are not yet in the records.", aria:"Family tree of Charles A. Folz and Stella Mudd Folz",
     intro:"Charles A. Folz and Stella M. Mudd started their family in St. Louis, where Gene was born in 1943, and had moved to Evansville by 1951. They raised nine children there. Their son Gene married Libby Zoglman in 1965; Gene and Libby are Trevor’s maternal grandparents."},
-  davis:{nodes:TREE_DAVIS, couple:["john_davis_sr","mabel_davis"], married:"Kenova, West Virginia", left:["JOHN’S SIDE · DAVIS","var(--berry)"], right:["MABEL’S SIDE","var(--berry)"], kidsLabel:"Their children",
-    title:"The Davis family", short:"Davis", desc:"Sara’s grandparents John William Davis Sr. of Kenova and his first wife, Mabel, with John’s parents Jack and Etta Davis above and their children below.", aria:"Family tree of John William Davis Sr. and Mabel Davis",
-    intro:"John William Davis Sr. was born in 1925, one of the ten children of Jack and Etta Davis. He spent more than 40 years at Heiner’s Bakery, served as a deacon at Buffalo Valley Baptist Church, and lived to 98. With his first wife, Mabel, he raised Ruth Ann, Sara’s mother, and John Jr."},
+  davis:{nodes:TREE_DAVIS, couple:["john_davis_sr","mabel_davis"], married:"Kenova, West Virginia", left:["JOHN’S SIDE · DAVIS","var(--berry)"], right:["MABEL’S SIDE · FRANCIS","var(--berry)"], kidsLabel:"Their children",
+    title:"The Davis & Francis family", short:"Davis & Francis", desc:"Sara’s grandparents John William Davis Sr. of Kenova and his first wife, Mabel Francis, with John’s parents Jack and Etta Davis and Mabel’s parents George and Redith Francis above, and their children below.", aria:"Family tree of John William Davis Sr. and Mabel Davis",
+    intro:"John William Davis Sr. was born in 1925, one of the ten children of Jack and Etta Davis. He spent more than 40 years at Heiner’s Bakery, served as a deacon at Buffalo Valley Baptist Church, and lived to 98. With his first wife, Mabel Francis, daughter of George and Redith Francis, he raised Ruth Ann, Sara’s mother, and John Jr."},
   campbell:{nodes:TREE_CAMPBELL, couple:["cledith_sr","barbara"], married:"married c. 1952 · 67 years", left:["CLEDITH SR.’S SIDE · CAMPBELL","var(--berry)"], right:["BARBARA’S SIDE · HIVELY & TURNER","var(--berry)"], kidsLabel:"Their five children",
     title:"The Campbell & Hively family", short:"Campbell & Hively", desc:"Sara’s grandparents Cledith Vernon Campbell Sr. and Barbara Ann Hively, with both sets of parents above and their five children below.", aria:"Family tree of Cledith Vernon Campbell Sr. and Barbara Ann Hively Campbell",
     intro:"Barbara Ann Hively was born in Charleston in 1935, a daughter of William and Helen Irene (Turner) Hively. She married Cledith Vernon Campbell Sr. and raised five children; their son Cledith Jr., “Bub,” pastored Altizer Baptist Church in Huntington for 50 years and is Sara’s father."}
@@ -1793,7 +1799,7 @@ const HERITAGE = [
  {title:"Parker", via:"Barbara → Joe Hively → Arminta", ev:"tree", text:"Joe Hively’s mother, Arminta Jane Parker (1873–1965), was born in Clay County to Hugh Millard Parker and Margaret Eva Hively, so Joe’s parents were both of Hively descent.", chain:["sara","clay","barbara","w_hively","wt_parker_59338","wt_parker_59336"]},
  {title:"Turner", via:"Bub → Barbara → Helen Irene", ev:"fam", text:"Barbara’s mother, Helen Irene Turner Hively, raised eight children in Charleston and St. Albans. Her parents are not yet found.", chain:["sara","clay","barbara","h_hively"]},
  {title:"Davis", via:"Ruthie → John W. Davis Sr.", ev:"doc", text:"Ruthie’s father, John William Davis Sr. (1925–2023) of Kenova, was one of ten children of Jack and Etta Davis; a brother, James, lived at Apple Grove in Mason County. Jack and Etta’s parents are the next step.", chain:["sara","ruthie","john_davis_sr","jack_davis"]},
- {title:"Mabel’s family", via:"Ruthie → Mabel", ev:"fam", text:"Ruthie’s mother, Mabel, John Sr.’s first wife. Her maiden name is the key that would open this line.", chain:["sara","ruthie","mabel_davis"]}
+ {title:"Francis", via:"Ruthie → Mabel", ev:"fam", text:"Ruthie’s mother was Mabel Francis, daughter of George and Redith Francis, with a sister, Myrtle. George’s and Redith’s parents are the next step.", chain:["sara","ruthie","mabel_davis","george_francis"]}
 ];
 function drawHeritage(){
   const evl={doc:["Documented","doc"],fam:["Family records","fam"],tree:["Compiled trees","tree"]};
