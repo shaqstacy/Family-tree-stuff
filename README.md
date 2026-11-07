@@ -5,6 +5,9 @@ Stacy, Riffe, Prichard, Folz, Mudd, Zoglman, Stallings, Coomes, Campbell and Hiv
 
 Open `index.html` in a browser, or view the hosted site on GitHub Pages.
 
+`zoglman-stallings/` holds the archived first edition of the site, covering only the
+Zoglman and Stallings families with their newspaper and record links.
+
 ## Adding to the tree
 
 All of the family data lives in the `DATA` block near the top of the `<script>` in `index.html`:
