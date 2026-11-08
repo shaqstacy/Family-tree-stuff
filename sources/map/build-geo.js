@@ -1,0 +1,10 @@
+const fs=require('fs');const tc=require('topojson-client'),ts=require('topojson-server'),tsim=require('topojson-simplify');
+const w=JSON.parse(fs.readFileSync('countries-50m.json'));const us=JSON.parse(fs.readFileSync('states-10m.json'));
+const keep=new Set(['826','372','250','276','528','056','442','756','040','203','208','724','620','380','616','578','752','124','484','192','044','438','705','348','703','191','352','246','233','428','440','112','804','642','100','070','688','499','008','807','300','804','498','304','132','214','332','388','630',]);
+const cf=tc.feature(w,w.objects.countries);cf.features=cf.features.filter(f=>keep.has(f.id));
+cf.features.forEach(f=>{f.properties={n:f.properties.name};});
+const sf=tc.feature(us,us.objects.states);sf.features=sf.features.filter(f=>!['Alaska','Hawaii','Puerto Rico','Guam','American Samoa','United States Virgin Islands','Commonwealth of the Northern Mariana Islands'].includes(f.properties.name));sf.features.forEach(f=>f.properties={n:f.properties.name});
+let topo=ts.topology({countries:cf,states:sf},2e4);
+topo=tsim.presimplify(topo);topo=tsim.simplify(topo,tsim.quantile(topo,+process.argv[2]));
+topo=tc.quantize?topo:topo;
+const out=JSON.stringify(topo);fs.writeFileSync('geo.json',out);console.log(out.length);
