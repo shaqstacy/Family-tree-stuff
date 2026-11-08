@@ -245,6 +245,9 @@ section{padding-block:64px}
 .ev-step{display:block;font-family:var(--type);font-size:.72rem;color:var(--muted);margin:2px 0 2px 10px}
 @media (max-width:700px){.ev-panel{top:auto;bottom:10px;max-height:45%}}
 .ev-panel .eyebrow{padding-right:22px}
+.ev-join{opacity:.7}
+#everyone-svg.hl .ev-join{opacity:.12}
+#everyone-svg.hl .ev-join.on{opacity:1}
 
 /* journey map */
 :root{--heat-1:#ffe08a;--heat-2:#f0a03c;--heat-3:#d0562e;--sea:#0f1b16;--landfill:#24382c}
@@ -2897,17 +2900,20 @@ function drawEveryone(){
     t.append("tspan").text(genLabel(r));
     t.append("tspan").attr("x",x).attr("dy",22).attr("class","ev-gen-sub").text(`${L.rows[r].length} ${L.rows[r].length===1?"person":"people"}${mid?" · born c. "+Math.round(mid/10)*10+"s":""}`);
   });
-  // parent-child links
+  // parent-child links: each set of parents meets at a small joining point, then branches to the children
   const lg=root.append("g").attr("class","ev-links");
-  const links=[];
-  ids.forEach(id=>{
-    const ps=(P[id].par||[]).filter(x=>L.g[x]!==undefined); if(!ps.length) return;
-    const py=ps.reduce((s,x)=>s+L.Y[x]+EV_H/2,0)/ps.length, px=Math.max(...ps.map(x=>L.X[x]))+EV_W;
-    const cy=L.Y[id]+EV_H/2, cx=L.X[id], mx=cx-(EV_COL-EV_W)/2+8;
-    const dx=Math.max(40,(cx-px)*0.55);
-    links.push({id,ps,d:`M${px} ${py} C${px+dx} ${py} ${cx-dx} ${cy} ${cx} ${cy}`});
+  const fams={};
+  ids.forEach(id=>{ const ps=(P[id].par||[]).filter(x=>L.g[x]!==undefined); if(!ps.length) return; const k=ps.slice().sort().join("+"); (fams[k]=fams[k]||{ps,kids:[]}).kids.push(id); });
+  const links=[], joins=[];
+  Object.values(fams).forEach(f=>{
+    const px=Math.max(...f.ps.map(x=>L.X[x]))+EV_W;
+    const jy=f.ps.reduce((s,x)=>s+L.Y[x]+EV_H/2,0)/f.ps.length, jx=px+34;
+    f.ps.forEach(x=>{ const y=L.Y[x]+EV_H/2; links.push({id:f.kids[0],ps:[x],par:x,kids:f.kids,d:`M${px} ${y} C${px+22} ${y} ${jx-14} ${jy} ${jx} ${jy}`}); });
+    joins.push({x:jx,y:jy,kids:f.kids,ps:f.ps});
+    f.kids.forEach(id=>{ const cy=L.Y[id]+EV_H/2, cx=L.X[id], dx=Math.max(30,(cx-jx)*0.5); links.push({id,ps:f.ps,d:`M${jx} ${jy} C${jx+dx} ${jy} ${cx-dx} ${cy} ${cx} ${cy}`}); });
   });
   lg.selectAll("path").data(links).join("path").attr("d",d=>d.d).attr("class","ev-link").attr("stroke",d=>FAM[P[d.id].fam].color);
+  lg.selectAll("circle").data(joins).join("circle").attr("class","ev-join").attr("cx",d=>d.x).attr("cy",d=>d.y).attr("r",3.5).attr("fill",d=>FAM[P[d.kids[0]].fam].color);
   // marriage ties
   const tg=root.append("g").attr("class","ev-ties");
   const ties=[]; ids.forEach(id=>[...(L.sp[id]||[])].forEach(s=>{ if(id<s && L.g[s]===L.g[id] && Math.abs(L.Y[s]-L.Y[id])<=(EV_H+EV_GAP)*1.5) ties.push([id,s]); }));
@@ -2982,7 +2988,8 @@ function everyoneHighlight(){
   if(EVT.sel){ const up=x=>{ if(on.has(x)||!P[x]) return; on.add(x); (P[x].par||[]).forEach(up); }; const down=x=>{ on.add(x); (L.kids[x]||[]).forEach(down); }; up(EVT.sel); down(EVT.sel); }
   d3.select("#everyone-svg").classed("hl",!!EVT.sel);
   d3.selectAll("#everyone-svg .ev-node").classed("on",id=>on.has(id)).classed("sel",id=>id===EVT.sel);
-  d3.selectAll("#everyone-svg .ev-link").classed("on",d=>on.has(d.id)&&d.ps.some(x=>on.has(x)));
+  d3.selectAll("#everyone-svg .ev-link").classed("on",d=>d.par? (on.has(d.par)&&d.kids.some(k=>on.has(k))) : (on.has(d.id)&&d.ps.some(x=>on.has(x))));
+  d3.selectAll("#everyone-svg .ev-join").classed("on",d=>d.kids.some(k=>on.has(k))&&d.ps.some(x=>on.has(x)));
 }
 document.addEventListener("click",e=>{
   if(!EVT.built) return;
