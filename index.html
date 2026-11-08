@@ -738,14 +738,16 @@ const PEOPLE = [
 
 
   // ---------------- FOLZ ----------------
-  {id:"charles_f", name:"Charles A. Folz", fam:"F", b:"c. 1916", bFlag:"Online trees give 1916 or 1917, born in Indiana", d:"not yet confirmed", dFlag:"A MyHeritage record shows a Charles Folz dying in Evansville on Nov. 4, 1991, at 75", dp:"Evansville, Indiana", sp:["stella"], role:"Gene’s father", notes:["Father of nine with Stella Mudd. The family was in St. Louis when Gene was born in 1943 and in Evansville by 1951.","Remembered with Stella as the grandparents “Charles and Stella Folz of Evansville” in their grandson Alex’s obituary."], src:["WEB"]},
+  {id:"charles_f", name:"Charles Alexander Folz", short:"Charles A. Folz", fam:"F", b:"July 13, 1916", bp:"Evansville, Indiana", d:"Nov. 4, 1991", dp:"Evansville, Indiana · age 75", par:["george_bf","anna_fieth"], sp:["stella"], role:"Gene’s father", notes:["Born in Evansville to George Bernard Folz and Anna Elizabeth (Fieth) Folz.","Father of nine with Stella Mudd; their first son, James Charles Folz, was born and died in 1942. The family was in St. Louis when Gene was born in 1943 and back in Evansville by 1951.","Remembered with Stella as the grandparents “Charles and Stella Folz of Evansville” in their grandson Alex’s obituary."], src:["USER","WEB"]},
+  {id:"george_bf", name:"George Bernard Folz", fam:"F", b:"1883", d:"1955", sp:["anna_fieth"], role:"Gene’s grandfather · Trevor’s 2nd-great-grandfather", notes:["Father of Charles Alexander Folz (1916). From the family tree record Trevor shared."], src:["USER"]},
+  {id:"anna_fieth", name:"Anna Elizabeth (Fieth) Folz", fam:"F", b:"1887", d:"1960", sp:["george_bf"], role:"Gene’s grandmother · Trevor’s 2nd-great-grandmother", notes:["Mother of Charles Alexander Folz (1916). From the family tree record Trevor shared."], src:["USER"]},
   {id:"stella", name:"Stella M. (Mudd) Folz", short:"Stella Mudd", fam:"F", b:"Feb. 22, 1919", d:"Sept. 20, 2002", bur:"St. Joseph Catholic Cemetery, Evansville, Indiana", sp:["charles_f"], role:"Gene’s mother", notes:["Mother of nine children, including an infant son, James, who died young.","Mudd is an old Maryland Catholic surname that came west into Kentucky, like the Stallings and Coomes. Whether Stella’s branch followed that road is not yet known."], src:["WEB"]},
   {id:"gene", first:"Gene", name:"Gene Thomas Folz", short:"Gene Folz", fam:"F", b:"June 12, 1943", bp:"St. Louis, Missouri", d:"Oct. 31, 2026", dp:"Deaconess Midtown Hospital, Evansville · age 83", bur:"St. Joseph Catholic Cemetery, Evansville", par:["charles_f","stella"], sp:["c_libby"], role:"Libby’s husband", notes:["Graduated from Mater Dei High School in Evansville in 1961.","Earned a bachelor’s degree in business from the University of Evansville in 1970 and an MBA there in 1976.","Began his career at Bucyrus-Erie in Evansville and finished it at Cablofil in Mascoutah, Illinois.","Married Elizabeth A. Zoglman on May 29, 1965, at Holy Family Catholic Church, Jasper. Married 61 years; father of Annette, Alex, Alison and Amy; seven grandchildren and two great-grandchildren.","Funeral Mass at St. Boniface Catholic Church, Evansville, on Nov. 7, 2026. The family asked for memorials to Special Olympics of Evansville or the St. Vincent de Paul Society at St. Boniface."], src:["WEB"]},
   {id:"michael_f", first:"Michael", photo:"michael_ph", name:"Michael L. “Mike” Folz", short:"Mike Folz", fam:"F", b:"Jan. 7, 1951", bp:"Evansville, Indiana", d:"Feb. 17, 2024", dp:"at home, Evansville · age 73", bur:"St. Joseph Catholic Cemetery, Evansville", par:["charles_f","stella"], sp:["linda_f"], role:"Gene’s brother · Libby’s brother-in-law", notes:["Born in Evansville to Charles A. and Stella M. (Mudd) Folz. Attended Mater Dei High School as a freshman, then F.J. Reitz High School, graduating in 1969; two years at USI.","Worked 35 years in facility maintenance at Bristol Myers-Squibb, retiring in 2008.","A lifelong member of St. Agnes Catholic Church and of the St. Agnes and Mater Dei Men’s Clubs; a skilled craftsman who helped with countless do-it-yourself and volunteer projects.","Loved car shows, his grandkids’ games, and cruising in his restored ’56 Chevy with Linda, his wife of 51 years. They traveled to Costa Rica, Hawaii and the Caribbean and reached all but two of the 50 states.","Father of Eric (Stephanie Stewart) and Natalie (Keith) Maasberg; grandfather of Dalton and Rachael Folz and Sydney, Levi and Brody Maasberg. Funeral Mass at St. Agnes, February 22, 2024."], src:["USER","WEB"]},
   {id:"linda_f", name:"Linda (Mull) Folz", fam:"M", sp:["michael_f"], role:"Mike Folz’s wife", notes:["Daughter of Harry R. Mull and Clara (Nurrenbern) Mull of Evansville; sister of Harry C. Mull of Henderson, Ky. Married to Mike 51 years."], src:["USER"]},
   {id:"eric_f", name:"Eric Folz", fam:"F", par:["michael_f","linda_f"], role:"Gene’s nephew · Evansville", notes:["Partner Stephanie Stewart; father of Dalton and Rachael Folz."], src:["USER"]},
   {id:"natalie_f", name:"Natalie (Folz) Maasberg", fam:"F", par:["michael_f","linda_f"], role:"Gene’s niece · Evansville", notes:["Married to Keith Maasberg; mother of Sydney, Levi and Brody."], src:["USER"]},
-  {id:"james_f", first:"James", name:"James Folz", fam:"F", par:["charles_f","stella"], role:"Gene’s infant brother", notes:["Died in infancy; named in Gene’s obituary."], src:["WEB"]},
+  {id:"james_f", first:"James", name:"James Charles Folz", fam:"F", b:"1942", d:"1942", par:["charles_f","stella"], role:"Gene’s infant brother", notes:["Charles and Stella’s first child; born and died in 1942, the year before Gene was born. Named in Gene’s obituary."], src:["USER","WEB"]},
   {id:"ed_f", first:"Ed", name:"Edward P. “Ed” Folz", fam:"F", par:["charles_f","stella"], role:"Gene’s brother · Evansville", notes:["Married to Kathy."], src:["WEB"]},
   {id:"george_f", first:"George", name:"George Folz", fam:"F", par:["charles_f","stella"], role:"Gene’s brother · Evansville", notes:["Married to Julie."], src:["WEB"]},
   {id:"tony_f", first:"Tony", name:"Tony Folz", fam:"F", par:["charles_f","stella"], role:"Gene’s brother · Evansville", notes:["Married to Diane."], src:["WEB"]},
@@ -1321,6 +1323,8 @@ const EVENTS = [
  {y:1985, d:"Sept. 28", t:"Bud Zoglman dies.", f:"Z", who:["bud"]},
  {y:2009, d:"July 15", t:"Theresa Lavina Zoglman dies at 90 at Memorial Hospital, Jasper; buried in Fairview Cemetery.", f:"Z", who:["theresa"]},
  {y:1919, d:"Feb. 22", t:"Stella Mudd born.", f:"F", who:["stella"]},
+ {y:1916, d:"July 13", t:"Charles Alexander Folz, Gene’s father, born in Evansville to George Bernard and Anna (Fieth) Folz.", f:"F", who:["charles_f","george_bf","anna_fieth"]},
+ {y:1991, d:"Nov. 4", t:"Charles A. Folz dies in Evansville at 75.", f:"F", who:["charles_f"]},
  {y:1943, d:"June 12", t:"Gene Thomas Folz born in St. Louis, Missouri, to Charles and Stella Folz.", f:"F", who:["gene","charles_f","stella"]},
  {y:1951, d:"Jan. 7", t:"Michael Folz born in Evansville; the Folz family has settled there.", f:"F", who:["michael_f"]},
  {y:1961, t:"Gene graduates from Mater Dei High School, Evansville.", f:"F", who:["gene"]},
@@ -1620,8 +1624,9 @@ const TREE_FOLZ = [
   {id:"stella", x:385, y:395, from:"gene"},
   {id:"bud", x:615, y:395, from:"c_libby", label:"Bud Zoglman"},
   {id:"theresa", x:820, y:420, from:"c_libby", label:"Theresa Stallings"},
-  {id:"folzpar", x:150, y:250, from:"charles_f", unknown:"Folz grandparents"},
-  {id:"muddpar", x:390, y:220, from:"stella", unknown:"Mudd parents"},
+  {id:"george_bf", x:100, y:270, from:"charles_f", label:"George B. Folz"},
+  {id:"anna_fieth", x:245, y:190, from:"charles_f", label:"Anna Fieth"},
+  {id:"muddpar", x:420, y:290, from:"stella", unknown:"Mudd parents"},
   {id:"henry", x:560, y:195, from:"bud"},
   {id:"lizzie", x:665, y:270, from:"bud"},
   {id:"lt", x:855, y:265, from:"theresa"},
@@ -1673,8 +1678,11 @@ const TREE_PRICHARD = [
 const TREE_FOLZMUDD = [
   {id:"charles_f", x:390, y:585, kind:"couple", label:"Charles A. Folz"},
   {id:"stella", x:610, y:585, kind:"couple", label:"Stella Mudd"},
-  {id:"folzpar2", x:230, y:400, from:"charles_f", unknown:"Folz parents"},
-  {id:"muddpar2", x:770, y:400, from:"stella", unknown:"Mudd parents"}
+  {id:"george_bf", x:180, y:420, from:"charles_f", label:"George B. Folz"},
+  {id:"anna_fieth", x:385, y:395, from:"charles_f", label:"Anna Fieth"},
+  {id:"folzpar3", x:150, y:250, from:"george_bf", unknown:"Folz parents"},
+  {id:"fiethpar", x:390, y:220, from:"anna_fieth", unknown:"Fieth parents"},
+  {id:"muddpar2", x:720, y:400, from:"stella", unknown:"Mudd parents"}
 ];
 const TREE_CAMPBELL = [
   {id:"cledith_sr", x:390, y:585, kind:"couple", label:"Cledith Campbell Sr."},
