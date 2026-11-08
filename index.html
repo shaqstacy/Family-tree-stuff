@@ -244,6 +244,7 @@ section{padding-block:64px}
 .ev-route li{margin:2px 0}
 .ev-step{display:block;font-family:var(--type);font-size:.72rem;color:var(--muted);margin:2px 0 2px 10px}
 @media (max-width:700px){.ev-panel{top:auto;bottom:10px;max-height:45%}}
+.ev-panel .eyebrow{padding-right:22px}
 
 /* journey map */
 :root{--heat-1:#ffe08a;--heat-2:#f0a03c;--heat-3:#d0562e;--sea:#0f1b16;--landfill:#24382c}
@@ -532,7 +533,7 @@ footer{border-top:1px solid var(--line);padding-block:30px;color:var(--muted);fo
         <div>
           <div class="eyebrow">The whole family</div>
           <h2>The whole family tree</h2>
-          <p><b>Main family</b> shows Trevor’s and Sara’s direct ancestors back to their 3rd-great-grandparents, the Stacy line all the way to Wiltshire, their brothers and sisters, aunts and uncles, and Jeremiah. <b>Everyone</b> shows every person on this site. Both are arranged by generation, from the oldest ancestors on the left to Jeremiah on the right. Drag to move around, scroll or pinch to zoom, and select anyone to light up their ancestors and descendants. A panel then lists their parents, spouse and children and the steps that connect them to Trevor or Sara; select any name there to jump to that person. Bold outlines mark Trevor’s and Sara’s direct ancestors.</p>
+          <p><b>Main family</b> shows Trevor’s and Sara’s direct ancestors back to their 3rd-great-grandparents, plus the four long lines from the Ancestor lines tabs (the Stacy line to Wiltshire, Trevor’s earliest line to William Braunche, the Campbell line and Bub’s Hively line to Württemberg), their brothers and sisters, aunts and uncles, and Jeremiah. <b>Everyone</b> shows every person on this site. Both are arranged by generation, from the oldest ancestors on the left to Jeremiah on the right. Drag to move around, scroll or pinch to zoom, and select anyone to light up their ancestors and descendants. A panel then lists their parents, spouse and children and the steps that connect them to Trevor or Sara; select any name there to jump to that person. Bold outlines mark Trevor’s and Sara’s direct ancestors.</p>
         </div>
       </div>
       <div class="ev-bar"><div class="chips" role="group" aria-label="Tree view"><button class="chip" type="button" data-evview="main" aria-pressed="true">Main family</button><button class="chip" type="button" data-evview="all" aria-pressed="false">Everyone</button></div></div>
@@ -2802,6 +2803,8 @@ function mainFamily(){
   const up=(x,d)=>{ if(!P[x]||d>5) return; S.add(x); (P[x].par||[]).forEach(y=>up(y,d+1)); };
   up("trevor",0); up("sara",0);
   (typeof LINEAGE!=="undefined"?LINEAGE:[]).forEach(l=>(l.who||[]).forEach(w=>{ if(P[w]) S.add(w); }));
+  // the four lines from the Ancestor lines tabs, with each ancestor's spouse
+  if(typeof LINES!=="undefined") Object.values(LINES).forEach(l=>{ try{ (l.chain()||[]).forEach(w=>{ if(!P[w]) return; S.add(w); (P[w].sp||[]).forEach(x=>{ if(P[x] && P[x].par && PEOPLE.some(c=>(c.par||[]).includes(x)&&(c.par||[]).includes(w))) S.add(x); }); }); }catch(e){} });
   ["trevor","sara"].forEach(x=>(P[x].par||[]).forEach(pp=>{ (kids[pp]||[]).forEach(k=>S.add(k)); (P[pp]&&P[pp].par||[]).forEach(gp=>(kids[gp]||[]).forEach(k=>S.add(k))); }));
   (kids.trevor||[]).forEach(k=>S.add(k));
   return S;
