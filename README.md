@@ -18,3 +18,7 @@ All of the family data lives in the `DATA` block near the top of the `<script>` 
 - `RECORDS` – linked obituaries, grave memorials and documents
 - `MEDIA` – photos and scanned documents (files live in `media/`)
 - `TREES` – the layouts for each family tree view
+
+## Public edition
+
+`node tools/build_public.js dist-public` builds a public copy of the site in `dist-public/`. It removes the dates, places, photos, notes, timeline entries, stories and records of living people from the data itself, so they are not in the page source either. Living relatives keep only their names and family links. `tools/living.js` decides who counts as living: no death date and a known or estimated birth year of 1926 or later. Add ids to `ALWAYS_LIVING` or `NEVER_LIVING` there to override it.

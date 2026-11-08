@@ -252,6 +252,7 @@ section{padding-block:64px}
 .mx-notes,.mx-legs{margin:0;padding-left:20px;font-size:.95rem}
 .mx-notes li,.mx-legs li{margin-bottom:6px}
 .linkish{background:none;border:0;padding:0;color:var(--gold);text-decoration:underline;cursor:pointer;font-size:.92rem}
+.pub-note{position:fixed;left:12px;bottom:12px;z-index:40;font-family:var(--type);font-size:.75rem;color:var(--muted);background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:4px 10px;max-width:calc(100% - 24px)}
 .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 @media (min-width:901px){.place-card{max-height:760px;overflow:auto}}
 
@@ -1270,6 +1271,7 @@ const P = Object.fromEntries(PEOPLE.map(p=>[p.id,p]));
 PEOPLE.forEach(p=>{p.par=p.par||[];p.sp=p.sp||[];p.notes=p.notes||[];p.src=p.src||[];});
 // symmetric spouses
 PEOPLE.forEach(p=>p.sp.forEach(s=>{if(P[s]&&!P[s].sp.includes(p.id))P[s].sp.push(p.id)}));
+const PUBLIC_EDITION = false;
 const yearOf = s => { const m = s && String(s).match(/(\d{4})/); return m ? +m[1] : null; };
 const span = p => { const b=yearOf(p.b), d=yearOf(p.d); if(b&&d) return b+"–"+d; if(b) return "b. "+b; if(d) return "d. "+d; return ""; };
 const childrenOf = id => PEOPLE.filter(c=>c.par.includes(id)).sort((a,b)=>(yearOf(a.b)||9999)-(yearOf(b.b)||9999));
@@ -2760,7 +2762,7 @@ function openPerson(id){
   const row=(k,v,flag)=>v?`<dt>${k}</dt><dd>${esc(v)}${flag?`<span class="flag" title="${esc(flag)}">see note</span><br><small class="muted">${esc(flag)}</small>`:""}</dd>`:"";
   let h=`<div class="eyebrow" style="color:${FAM[p.fam].color}">${FAM[p.fam].label}${p.role?" · "+esc(p.role):""}</div>
     <h2 id="d-name">${esc(p.name)}</h2>${p.aka?`<p class="aka">${esc(p.aka)}</p>`:""}
-    <dl class="vitals">${row("Born",[p.b,p.bp].filter(Boolean).join(" · "),p.bFlag)}${row("Died",[p.d,p.dp].filter(Boolean).join(" · "),p.dFlag)}${row("Buried",p.bur)}</dl>`;
+    <dl class="vitals">${row("Born",[p.b,p.bp].filter(Boolean).join(" · "),p.bFlag)}${row("Died",[p.d,p.dp].filter(Boolean).join(" · "),p.dFlag)}${row("Buried",p.bur)}</dl>${p.living?`<p class="muted" style="font-size:.95rem">Living. Dates, places, photos and personal notes are kept private in this edition of the tree.</p>`:""}`;
   h+=`<div class="rel">`;
   if(p.par.length) h+=`<h4>Parents</h4>${chipList(p.par)}`;
   if(p.sp.length) h+=`<h4>Spouse</h4>${chipList(p.sp)}`;
@@ -2854,6 +2856,7 @@ $("#shake").addEventListener("click",()=>{ if(!running) setPaused(false); burst(
 drawTree(); if(document.fonts&&document.fonts.ready) document.fonts.ready.then(()=>{ seed=7; drawTree(); });
 { const hk=location.hash.replace(/^#tree-/,"").replace(/^#/,""); if(TREES[hk] && hk!=="stacy") setTree(hk); else if(hk==="zoglman") setTree("zs"); else drawFamilyRecord(); }
 { const sh=document.querySelector(".tree-shell"); if(sh.scrollWidth>sh.clientWidth) sh.scrollLeft=(sh.scrollWidth-sh.clientWidth)/2; }
+if(PUBLIC_EDITION){ const b=document.createElement("div"); b.className="pub-note"; b.textContent="Public edition: details of living family members are kept private."; document.body.appendChild(b); }
 drawBranches(); drawChapters(); drawTimeline(); drawMap(); showPlace(); drawDir(); drawNotes(); drawRecords(); drawGallery(); drawLine(); drawHeritage();
 </script>
 </body>
