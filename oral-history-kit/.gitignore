@@ -1,0 +1,6 @@
+recordings/
+transcripts/
+voices/
+work/
+hf_token.txt
+.venv/
