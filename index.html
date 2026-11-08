@@ -234,6 +234,16 @@ section{padding-block:64px}
 #everyone-svg.hl .ev-link.on{opacity:1;stroke-width:3}
 .ev-node.sel rect:first-child{stroke:var(--gold);stroke-width:4}
 #everyone-svg.far .ev-yrs{display:none}
+.ev-panel{position:absolute;left:10px;top:10px;width:min(340px,calc(100% - 70px));max-height:calc(100% - 20px);overflow:auto;background:var(--surface);border:1px solid var(--line);border-radius:8px;box-shadow:var(--shadow);padding:14px 16px;font-size:.92rem}
+.ev-panel h3{font-size:1.25rem;margin:2px 0 2px}
+.ev-panel h4{font-family:var(--type);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:12px 0 5px;font-weight:400}
+.ev-panel .chips{display:flex;flex-wrap:wrap;gap:5px}
+.ev-panel .chip{font-size:.82rem}
+.ev-x{position:absolute;right:8px;top:6px;border:0;background:none;font-size:1.3rem;cursor:pointer;color:var(--muted)}
+.ev-route{list-style:none;margin:0;padding:0}
+.ev-route li{margin:2px 0}
+.ev-step{display:block;font-family:var(--type);font-size:.72rem;color:var(--muted);margin:2px 0 2px 10px}
+@media (max-width:700px){.ev-panel{top:auto;bottom:10px;max-height:45%}}
 
 /* journey map */
 :root{--heat-1:#ffe08a;--heat-2:#f0a03c;--heat-3:#d0562e;--sea:#0f1b16;--landfill:#24382c}
@@ -522,7 +532,7 @@ footer{border-top:1px solid var(--line);padding-block:30px;color:var(--muted);fo
         <div>
           <div class="eyebrow">The whole family</div>
           <h2>The whole family tree</h2>
-          <p><b>Main family</b> shows Trevor’s and Sara’s direct ancestors back to their 3rd-great-grandparents, the Stacy line all the way to Wiltshire, their brothers and sisters, aunts and uncles, and Jeremiah. <b>Everyone</b> shows every person on this site. Both are arranged by generation, from the oldest ancestors on the left to Jeremiah on the right. Drag to move around, scroll or pinch to zoom, and select anyone to light up their ancestors and descendants and open their record. Bold outlines mark Trevor’s and Sara’s direct ancestors.</p>
+          <p><b>Main family</b> shows Trevor’s and Sara’s direct ancestors back to their 3rd-great-grandparents, the Stacy line all the way to Wiltshire, their brothers and sisters, aunts and uncles, and Jeremiah. <b>Everyone</b> shows every person on this site. Both are arranged by generation, from the oldest ancestors on the left to Jeremiah on the right. Drag to move around, scroll or pinch to zoom, and select anyone to light up their ancestors and descendants. A panel then lists their parents, spouse and children and the steps that connect them to Trevor or Sara; select any name there to jump to that person. Bold outlines mark Trevor’s and Sara’s direct ancestors.</p>
         </div>
       </div>
       <div class="ev-bar"><div class="chips" role="group" aria-label="Tree view"><button class="chip" type="button" data-evview="main" aria-pressed="true">Main family</button><button class="chip" type="button" data-evview="all" aria-pressed="false">Everyone</button></div></div>
@@ -535,6 +545,7 @@ footer{border-top:1px solid var(--line);padding-block:30px;color:var(--muted);fo
       </div>
       <div class="ev-shell">
         <svg id="everyone-svg" role="group" aria-label="Zoomable tree of every family member by generation"></svg>
+        <aside class="ev-panel" id="ev-panel" hidden aria-live="polite"></aside>
         <div class="mx-zoom"><button type="button" id="ev-in" aria-label="Zoom in">+</button><button type="button" id="ev-out" aria-label="Zoom out">−</button></div>
       </div>
     </div>
@@ -2890,7 +2901,8 @@ function drawEveryone(){
     const ps=(P[id].par||[]).filter(x=>L.g[x]!==undefined); if(!ps.length) return;
     const py=ps.reduce((s,x)=>s+L.Y[x]+EV_H/2,0)/ps.length, px=Math.max(...ps.map(x=>L.X[x]))+EV_W;
     const cy=L.Y[id]+EV_H/2, cx=L.X[id], mx=cx-(EV_COL-EV_W)/2+8;
-    links.push({id,ps,d:`M${px} ${py} H${mx} V${cy} H${cx}`});
+    const dx=Math.max(40,(cx-px)*0.55);
+    links.push({id,ps,d:`M${px} ${py} C${px+dx} ${py} ${cx-dx} ${cy} ${cx} ${cy}`});
   });
   lg.selectAll("path").data(links).join("path").attr("d",d=>d.d).attr("class","ev-link").attr("stroke",d=>FAM[P[d.id].fam].color);
   // marriage ties
@@ -2908,12 +2920,12 @@ function drawEveryone(){
   g.append("text").attr("class","ev-name").attr("x",13).attr("y",19).text(id=>{ const s=P[id].short||P[id].name; return s.length>22? s.slice(0,21)+"…" : s; });
   g.append("text").attr("class","ev-yrs").attr("x",13).attr("y",36).text(id=>P[id].living?"Living":(span(P[id])||" "));
   g.append("title").text(id=>P[id].name+(span(P[id])?" · "+span(P[id]):"")+(P[id].role?" · "+P[id].role:""));
-  g.on("click",(e,id)=>{ e.stopPropagation(); everyoneSelect(id,false); openPerson(id); })
-   .on("keydown",(e,id)=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); everyoneSelect(id,false); openPerson(id);} });
+  g.on("click",(e,id)=>{ e.stopPropagation(); everyoneSelect(id,false); })
+   .on("keydown",(e,id)=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); everyoneSelect(id,false);} });
   // zoom
   const zoom=d3.zoom().scaleExtent([0.04,2.5]).on("zoom",ev=>{ root.attr("transform",ev.transform); EVT.k=ev.transform.k; host.classList.toggle("far",ev.transform.k<0.28); });
   svg.call(zoom).on("dblclick.zoom",null);
-  svg.on("click",()=>{ if(EVT.sel){ EVT.sel=null; everyoneHighlight(); } });
+  svg.on("click",()=>{ if(EVT.sel){ EVT.sel=null; everyoneHighlight(); everyonePanel(); } });
   EVT.zoom=zoom; EVT.svg=svg; EVT.W=W; EVT.H=H; EVT.bounds=[minX-60,minY-130,maxX+60,maxY+40];
   EVT.built=true;
   // search list
@@ -2928,10 +2940,40 @@ function everyoneFit(){
 }
 function everyoneFocus(id,k,instant){
   const L=EVT.L; if(L.g[id]===undefined) return;
-  const t=d3.zoomIdentity.translate(EVT.W/2,EVT.H/2).scale(k||Math.max(EVT.k,0.7)).translate(-(L.X[id]+EV_W/2),-(L.Y[id]+EV_H/2));
+  const off=(EVT.sel && EVT.W>760)?175:0;
+  const t=d3.zoomIdentity.translate(EVT.W/2+off,EVT.H/2).scale(k||Math.max(EVT.k,0.7)).translate(-(L.X[id]+EV_W/2),-(L.Y[id]+EV_H/2));
   (instant?EVT.svg:EVT.svg.transition().duration(800)).call(EVT.zoom.transform,t);
 }
-function everyoneSelect(id,move){ EVT.sel=id; everyoneHighlight(); if(move) everyoneFocus(id); }
+function everyoneSelect(id,move){ EVT.sel=id; everyoneHighlight(); everyonePanel(); if(move) everyoneFocus(id); }
+function everyonePath(from){
+  // shortest route through parents, children and spouses to Trevor or Sara
+  const L=EVT.L, goal=new Set(["trevor","sara"]), prev={[from]:null}, how={}, q=[from];
+  while(q.length){ const id=q.shift(); if(goal.has(id)){ const path=[]; let x=id; while(x!==null){ path.unshift([x,how[x]]); x=prev[x]; } return path; }
+    const p=P[id]; const nb=[...(p.par||[]).map(x=>[x,"parent"]), ...((L.kids[id]||[]).map(x=>[x,"child"])), ...[...(L.sp[id]||[])].map(x=>[x,"spouse"])];
+    nb.forEach(([x,r])=>{ if(L.g[x]!==undefined && !(x in prev)){ prev[x]=id; how[x]=r; q.push(x); } }); }
+  return null;
+}
+function everyonePanel(){
+  const el=$("#ev-panel"); if(!el) return;
+  const id=EVT.sel; if(!id){ el.hidden=true; el.innerHTML=""; return; }
+  const p=P[id], L=EVT.L;
+  const btn=x=>`<button type="button" class="chip" data-evgo="${x}"><span class="sw" style="background:${FAM[P[x].fam].color}"></span>${esc(P[x].short||P[x].name)}${L.g[x]===undefined?' <span class="muted" title="Opens the Everyone view">↗</span>':""}</button>`;
+  const grp=(t,ids)=>ids.length?`<h4>${t}</h4><div class="chips">${ids.map(btn).join("")}</div>`:"";
+  const par=(p.par||[]).filter(x=>P[x]), sps=(p.sp||[]).filter(x=>P[x]), kids=PEOPLE.filter(c=>(c.par||[]).includes(id)).map(c=>c.id);
+  const path=everyonePath(id);
+  let route="";
+  if(path && path.length>1){
+    const word={parent:"parent", child:"child", spouse:"spouse"};
+    route=`<h4>How ${esc(P[id].first||((P[id].short||P[id].name).split(" ")[0]))} connects to ${path[path.length-1][0]==="sara"?"Sara":"Trevor"}</h4><ol class="ev-route">`+path.map(([x,r],i)=>`<li>${i?`<span class="ev-step">↓ ${word[r]}</span>`:""}${btn(x)}</li>`).join("")+`</ol>`;
+  } else if(path) route=`<p class="muted">This is ${id==="sara"?"Sara":"Trevor"}.</p>`;
+  el.innerHTML=`<button type="button" class="ev-x" data-evclose aria-label="Close">×</button>
+    <div class="eyebrow" style="color:${FAM[p.fam].color}">${esc(FAM[p.fam].label)}${p.role?" · "+esc(p.role):""}</div>
+    <h3>${esc(p.name)}</h3><p class="muted" style="margin:0 0 6px">${esc(p.living?"Living":span(p)||"")}</p>${EVT.view==="main"?'<p class="muted" style="font-size:.78rem;margin:0">↗ = not in Main family; selecting it switches to Everyone.</p>':""}
+    ${grp("Parents · one column to the left",par)}${grp("Spouse",sps)}${grp("Children · one column to the right",kids)}
+    ${route}
+    <button type="button" class="btn" data-evopen="${id}" style="margin-top:12px">Open full record</button>`;
+  el.hidden=false;
+}
 function everyoneHighlight(){
   const L=EVT.L, on=new Set();
   if(EVT.sel){ const up=x=>{ if(on.has(x)||!P[x]) return; on.add(x); (P[x].par||[]).forEach(up); }; const down=x=>{ on.add(x); (L.kids[x]||[]).forEach(down); }; up(EVT.sel); down(EVT.sel); }
@@ -2941,6 +2983,9 @@ function everyoneHighlight(){
 }
 document.addEventListener("click",e=>{
   if(!EVT.built) return;
+  const go=e.target.closest("[data-evgo]"); if(go){ const x=go.dataset.evgo; if(EVT.L.g[x]===undefined){ EVT.view="all"; drawEveryone(); } everyoneSelect(x,true); return; }
+  const op=e.target.closest("[data-evopen]"); if(op){ openPerson(op.dataset.evopen); return; }
+  if(e.target.closest("[data-evclose]")){ EVT.sel=null; everyoneHighlight(); everyonePanel(); return; }
   const vb=e.target.closest("[data-evview]"); if(vb){ EVT.view=vb.dataset.evview; EVT.sel=null; drawEveryone(); return; }
   if(e.target.closest("#ev-fit")) everyoneFit();
   else if(e.target.closest("#ev-me")){ everyoneSelect("trevor",false); everyoneFocus("trevor",0.75); }
