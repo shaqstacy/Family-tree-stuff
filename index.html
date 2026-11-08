@@ -248,6 +248,9 @@ section{padding-block:64px}
 .ev-join{opacity:.7}
 #everyone-svg.hl .ev-join{opacity:.12}
 #everyone-svg.hl .ev-join.on{opacity:1}
+.ev-zone{fill-opacity:.07;stroke-opacity:.35;stroke-width:1.5}
+.ev-zone-t{font-family:var(--display);font-size:24px}
+.ev-zone-s{font-family:var(--type);font-size:13px;fill:var(--muted)}
 
 /* journey map */
 :root{--heat-1:#ffe08a;--heat-2:#f0a03c;--heat-3:#d0562e;--sea:#0f1b16;--landfill:#24382c}
@@ -536,7 +539,7 @@ footer{border-top:1px solid var(--line);padding-block:30px;color:var(--muted);fo
         <div>
           <div class="eyebrow">The whole family</div>
           <h2>The whole family tree</h2>
-          <p><b>Main family</b> shows Trevor’s and Sara’s direct ancestors back to their 3rd-great-grandparents, plus the four long lines from the Ancestor lines tabs (the Stacy line to Wiltshire, Trevor’s earliest line to William Braunche, the Campbell line and Bub’s Hively line to Württemberg), their brothers and sisters, aunts and uncles, and Jeremiah. <b>Everyone</b> shows every person on this site. Both are arranged by generation, from the oldest ancestors on the left to Jeremiah on the right. Drag to move around, scroll or pinch to zoom, and select anyone to light up their ancestors and descendants. A panel then lists their parents, spouse and children and the steps that connect them to Trevor or Sara; select any name there to jump to that person. Bold outlines mark Trevor’s and Sara’s direct ancestors.</p>
+          <p><b>Main family</b> shows Trevor’s and Sara’s direct ancestors back to their 3rd-great-grandparents, plus the four long lines from the Ancestor lines tabs (the Stacy line to Wiltshire, Trevor’s earliest line to William Braunche, the Campbell line and Bub’s Hively line to Württemberg), their brothers and sisters, aunts and uncles, and Jeremiah. <b>Everyone</b> shows every person on this site. Both are arranged by generation, from the oldest ancestors on the left to Jeremiah on the right. Drag to move around, scroll or pinch to zoom, and select anyone to light up their ancestors and descendants. A panel then lists their parents, spouse and children and the steps that connect them to Trevor or Sara; select any name there to jump to that person. Bold outlines mark Trevor’s and Sara’s direct ancestors. The tree is split into four shaded sides (Trevor’s father’s and mother’s families, then Sara’s father’s and mother’s families) that meet only in the middle, at Trevor, Sara and their parents.</p>
         </div>
       </div>
       <div class="ev-bar"><div class="chips" role="group" aria-label="Tree view"><button class="chip" type="button" data-evview="main" aria-pressed="true">Main family</button><button class="chip" type="button" data-evview="all" aria-pressed="false">Everyone</button></div></div>
@@ -2841,6 +2844,18 @@ function everyoneLayout(only){
       bl.sort((a,b)=>a.v-b.v); rows[r]=bl.flatMap(x=>x.b); reindex();
     });
   }
+  // four branches: Trevor's father's and mother's sides, Sara's father's and mother's sides,
+  // meeting only at Trevor, Sara, their brothers and sisters, and Jeremiah
+  const BR={}, kidsOf=x=>(kids[x]||[]).filter(ok);
+  const tSibs=["rick","annette"].flatMap(kidsOf), sSibs=["clay","ruthie"].flatMap(kidsOf);
+  tSibs.forEach(x=>BR[x]=1.3); sSibs.forEach(x=>BR[x]=1.7); BR.trevor=1.45; BR.sara=1.55; kidsOf("trevor").forEach(x=>BR[x]=1.5);
+  const roots=[["rick",0],["annette",1],["clay",2],["ruthie",3]];
+  roots.forEach(([r0,b])=>{ if(!ok(r0)) return; BR[r0]=b; const q=[r0];
+    while(q.length){ const id=q.shift(); [...(P[id].par||[]),...(kids[id]||[]),...(sp[id]||[])].forEach(x=>{ if(!ok(x)||BR[x]!==undefined||roots.some(([rr])=>rr===x)) return; BR[x]=b; q.push(x); }); } });
+  // the two parent couples sit in the center, where the sides meet
+  BR.rick=1.31; BR.annette=1.32; BR.clay=1.68; BR.ruthie=1.69;
+  const br=x=>BR[x]===undefined?1.5:BR[x];
+  const brGap=(a,b)=>(sp[a]&&sp[a].has(b))?0:(Math.abs(br(a)-br(b))>=0.5?150:0);
   // final sweeps oldest -> youngest: order by parents' position so siblings stay together;
   // people who married in follow their spouse
   for(let it=0; it<4; it++){
@@ -2849,12 +2864,13 @@ function everyoneLayout(only){
       const key={};
       rows[r].forEach(id=>{ const ps=(P[id].par||[]).filter(x=>g[x]===r-1); if(ps.length) key[id]=ps.reduce((s,x)=>s+idx[x],0)/ps.length + (pos[id]||0)*1e-6; });
       rows[r].forEach(id=>{ if(key[id]===undefined){ const s=[...(sp[id]||[])].find(x=>key[x]!==undefined); key[id]= s? key[s]+0.0001 : idx[id]*(rows[r-1].length/Math.max(1,rows[r].length)); } });
+      rows[r].forEach(id=>key[id]+=br(id)*1e5);
       const bl=blocks(r).map(b=>({b:b.slice().sort((x,y)=>key[x]-key[y]), v:b.reduce((s,x)=>s+key[x],0)/b.length}));
       bl.sort((x,y)=>x.v-y.v); rows[r]=bl.flatMap(x=>x.b); reindex();
     });
   }
   // x positions: pack, then pull toward parents/children, keeping order
-  const X={}; gens.forEach(r=>rows[r].forEach((id,i)=>X[id]=i*(EV_H+EV_GAP)));
+  const X={}; gens.forEach(r=>{ let y=0; rows[r].forEach((id,i)=>{ if(i) y+=EV_H+EV_GAP+brGap(rows[r][i-1],id); X[id]=y; }); });
   for(let it=0; it<30; it++){
     const dir = it%2 ? gens.slice().reverse() : gens;
     dir.forEach(r=>{
@@ -2863,14 +2879,33 @@ function everyoneLayout(only){
       // spouses: average their wants so couples sit side by side
       const w=want.slice();
       ids.forEach((id,i)=>{ if(i>0 && sp[id] && sp[id].has(ids[i-1])){ const m=(want[i]+want[i-1])/2; w[i-1]=m-(EV_H+EV_GAP)/2; w[i]=m+(EV_H+EV_GAP)/2; } });
-      const L=ids.map((id,i)=>w[i]); for(let i=1;i<ids.length;i++) L[i]=Math.max(L[i], L[i-1]+EV_H+EV_GAP);
-      const R=ids.map((id,i)=>w[i]); for(let i=ids.length-2;i>=0;i--) R[i]=Math.min(R[i], R[i+1]-EV_H-EV_GAP);
+      const L=ids.map((id,i)=>w[i]); for(let i=1;i<ids.length;i++) L[i]=Math.max(L[i], L[i-1]+EV_H+EV_GAP+brGap(ids[i-1],ids[i]));
+      const R=ids.map((id,i)=>w[i]); for(let i=ids.length-2;i>=0;i--) R[i]=Math.min(R[i], R[i+1]-EV_H-EV_GAP-brGap(ids[i],ids[i+1]));
       ids.forEach((id,i)=>X[id]=(L[i]+R[i])/2);
-      for(let i=1;i<ids.length;i++) X[ids[i]]=Math.max(X[ids[i]], X[ids[i-1]]+EV_H+EV_GAP);
+      for(let i=1;i<ids.length;i++) X[ids[i]]=Math.max(X[ids[i]], X[ids[i-1]]+EV_H+EV_GAP+brGap(ids[i-1],ids[i]));
     });
   }
+  // stack the four sides into their own zones so they never overlap
+  const zoneOf=x=>{ const v=br(x); return v<0.5?0 : v<1.25?1 : v<1.75?2 : v<2.5?3 : 4; };
+  const ZG=230, zones=[]; let cursor=null;
+  // center zone: a compact, fixed arrangement
+  (()=>{ const S=EV_H+EV_GAP, has=x=>g[x]!==undefined, uniq=a=>[...new Set(a)].filter(has);
+    const tS=uniq(tSibs).filter(x=>x!=="trevor"), sS=uniq(sSibs).filter(x=>x!=="sara");
+    const col0=[...tS, ...(has("trevor")?["trevor"]:[]), ...(has("sara")?["sara"]:[]), ...sS];
+    col0.forEach((id,i)=>X[id]=i*S);
+    const mid=a=>a.length? a.reduce((s,x)=>s+X[x],0)/a.length : 0;
+    const tg=[...tS,"trevor"].filter(has), sg=["sara",...sS].filter(has);
+    if(has("rick")) X.rick=mid(tg)-S/2; if(has("annette")) X.annette=mid(tg)+S/2;
+    if(has("clay")) X.clay=Math.max(mid(sg)-S/2, (has("annette")?X.annette:-1e9)+S*1.6); if(has("ruthie")) X.ruthie=(has("clay")?X.clay:mid(sg))+S;
+    const kj=(kids.trevor||[]).filter(has); const m0=(has("trevor")&&has("sara"))?(X.trevor+X.sara)/2:(has("trevor")?X.trevor:0);
+    kj.forEach((id,i)=>X[id]=m0+(i-(kj.length-1)/2)*S);
+  })();
+  [0,1,2,3,4].forEach(z=>{ const m=Object.keys(g).filter(id=>zoneOf(id)===z); if(!m.length) return;
+    const lo=Math.min(...m.map(id=>X[id])), hi=Math.max(...m.map(id=>X[id]));
+    const shift= cursor===null? 0 : cursor+ZG-lo; m.forEach(id=>X[id]+=shift);
+    zones.push({z, lo:lo+shift, hi:hi+shift+EV_H}); cursor=hi+shift+EV_H; });
   const C={}; Object.keys(g).forEach(id=>C[id]=(g[id]-gens[0])*EV_COL);
-  return {g,gens,rows,X:C,Y:X,kids,sp};
+  return {g,gens,rows,X:C,Y:X,kids,sp,BR,zones};
 }
 function genLabel(r){
   if(r===0) return "Trevor & Sara’s generation";
@@ -2894,13 +2929,18 @@ function drawEveryone(){
   const band=root.append("g").attr("class","ev-bands");
   L.gens.forEach((r,i)=>{
     const x=L.X[L.rows[r][0]];
-    band.append("rect").attr("x",x-(EV_COL-EV_W)/2).attr("y",minY-120).attr("width",EV_COL).attr("height",maxY-minY+160).attr("class",i%2?"ev-band alt":"ev-band");
+    band.append("rect").attr("x",x-(EV_COL-EV_W)/2).attr("y",minY-200).attr("width",EV_COL).attr("height",maxY-minY+240).attr("class",i%2?"ev-band alt":"ev-band");
     const yrs=L.rows[r].map(id=>yearOf(P[id].b)).filter(Boolean).sort((a,b)=>a-b);
     const mid=yrs.length? yrs[Math.floor(yrs.length/2)] : null;
-    const t=band.append("text").attr("class","ev-gen").attr("x",x).attr("y",minY-80);
+    const t=band.append("text").attr("class","ev-gen").attr("x",x).attr("y",minY-160);
     t.append("tspan").text(genLabel(r));
     t.append("tspan").attr("x",x).attr("dy",22).attr("class","ev-gen-sub").text(`${L.rows[r].length} ${L.rows[r].length===1?"person":"people"}${mid?" · born c. "+Math.round(mid/10)*10+"s":""}`);
   });
+  const ZONE={0:["Trevor’s father’s side","Rick Stacy’s family: Stacy, Prichard, Riffe, Blankenship and the colonial Virginia lines","var(--teal)"],1:["Trevor’s mother’s side","Annette Folz’s family: Folz, Fieth, Hedinger, Zoglman, Stallings and Coomes","var(--sky)"],2:["Where the four sides meet","Trevor and Sara, their parents, brothers and sisters, and Jeremiah","var(--gold)"],3:["Sara’s father’s side","Bub Campbell’s family: Campbell, Kelly and Hively","var(--berry)"],4:["Sara’s mother’s side","Ruthie Davis’s family: Davis, Francis, Adkins and Smith","var(--plum)"]};
+  const zg=root.append("g").attr("class","ev-zones");
+  (L.zones||[]).forEach(z=>{ const [t1,t2,c]=ZONE[z.z];
+    zg.append("rect").attr("x",minX-60).attr("y",z.lo-56).attr("width",maxX-minX+120).attr("height",z.hi-z.lo+80).attr("rx",14).attr("class","ev-zone").attr("style",`fill:${c};stroke:${c}`);
+    for(let lx=minX-40; lx<maxX-200; lx+=EV_COL*4){ const t=zg.append("text").attr("class","ev-zone-t").attr("x",lx).attr("y",z.lo-26).attr("style",`fill:${c}`); t.append("tspan").text(t1); if(lx===minX-40) t.append("tspan").attr("class","ev-zone-s").attr("dx",14).text(t2); } });
   // parent-child links: each set of parents meets at a small joining point, then branches to the children
   const lg=root.append("g").attr("class","ev-links");
   const fams={};
@@ -2936,7 +2976,7 @@ function drawEveryone(){
   const zoom=d3.zoom().scaleExtent([0.04,2.5]).on("zoom",ev=>{ root.attr("transform",ev.transform); EVT.k=ev.transform.k; host.classList.toggle("far",ev.transform.k<0.28); });
   svg.call(zoom).on("dblclick.zoom",null);
   svg.on("click",()=>{ if(EVT.sel){ EVT.sel=null; everyoneHighlight(); everyonePanel(); } });
-  EVT.zoom=zoom; EVT.svg=svg; EVT.W=W; EVT.H=H; EVT.bounds=[minX-60,minY-130,maxX+60,maxY+40];
+  EVT.zoom=zoom; EVT.svg=svg; EVT.W=W; EVT.H=H; EVT.bounds=[minX-70,minY-200,maxX+70,maxY+40];
   EVT.built=true;
   // search list
   $("#ev-list").innerHTML=PEOPLE.filter(p=>p.fam!=="X").sort((a,b)=>a.name.localeCompare(b.name)).map(p=>`<option value="${esc(p.name)}${span(p)?" ("+esc(span(p))+")":""}"></option>`).join("");
