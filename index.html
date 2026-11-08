@@ -2849,7 +2849,8 @@ function everyoneLayout(only){
       const key={};
       rows[r].forEach(id=>{ const ps=(P[id].par||[]).filter(x=>g[x]===r-1); if(ps.length) key[id]=ps.reduce((s,x)=>s+idx[x],0)/ps.length + (pos[id]||0)*1e-6; });
       rows[r].forEach(id=>{ if(key[id]===undefined){ const s=[...(sp[id]||[])].find(x=>key[x]!==undefined); key[id]= s? key[s]+0.0001 : idx[id]*(rows[r-1].length/Math.max(1,rows[r].length)); } });
-      rows[r].sort((a,b)=>key[a]-key[b]); reindex();
+      const bl=blocks(r).map(b=>({b:b.slice().sort((x,y)=>key[x]-key[y]), v:b.reduce((s,x)=>s+key[x],0)/b.length}));
+      bl.sort((x,y)=>x.v-y.v); rows[r]=bl.flatMap(x=>x.b); reindex();
     });
   }
   // x positions: pack, then pull toward parents/children, keeping order
