@@ -521,10 +521,11 @@ footer{border-top:1px solid var(--line);padding-block:30px;color:var(--muted);fo
       <div class="sec-head">
         <div>
           <div class="eyebrow">The whole family</div>
-          <h2>Everyone on one tree</h2>
-          <p>Every person on this site, arranged by generation, from the oldest ancestors on the left to Jeremiah on the right. Drag to move around, scroll or pinch to zoom, and select anyone to light up their ancestors and descendants and open their record. Bold outlines mark Trevor’s and Sara’s direct ancestors.</p>
+          <h2>The whole family tree</h2>
+          <p><b>Main family</b> shows Trevor’s and Sara’s direct ancestors back to their 3rd-great-grandparents, the Stacy line all the way to Wiltshire, their brothers and sisters, aunts and uncles, and Jeremiah. <b>Everyone</b> shows every person on this site. Both are arranged by generation, from the oldest ancestors on the left to Jeremiah on the right. Drag to move around, scroll or pinch to zoom, and select anyone to light up their ancestors and descendants and open their record. Bold outlines mark Trevor’s and Sara’s direct ancestors.</p>
         </div>
       </div>
+      <div class="ev-bar"><div class="chips" role="group" aria-label="Tree view"><button class="chip" type="button" data-evview="main" aria-pressed="true">Main family</button><button class="chip" type="button" data-evview="all" aria-pressed="false">Everyone</button></div></div>
       <div class="ev-bar">
         <label class="ev-find"><span class="sr-only">Find a person</span><input id="ev-find" list="ev-list" type="search" placeholder="Find a person…" autocomplete="off"></label>
         <datalist id="ev-list"></datalist>
@@ -2784,19 +2785,29 @@ document.addEventListener("input",e=>{ if(e.target.id==="mx-year"){ MAP.year=+e.
 
 /* ---------- Whole family tree (everyone, by generation) ---------- */
 const EV_W=172, EV_H=44, EV_GAP=10, EV_COL=270;
-const EVT={ built:false, sel:null, k:1 };
-function everyoneLayout(){
+const EVT={ built:false, sel:null, k:1, view:"main" };
+function mainFamily(){
+  const S=new Set(), kids={}; PEOPLE.forEach(p=>(p.par||[]).forEach(i=>(kids[i]=kids[i]||[]).push(p.id)));
+  const up=(x,d)=>{ if(!P[x]||d>5) return; S.add(x); (P[x].par||[]).forEach(y=>up(y,d+1)); };
+  up("trevor",0); up("sara",0);
+  (typeof LINEAGE!=="undefined"?LINEAGE:[]).forEach(l=>(l.who||[]).forEach(w=>{ if(P[w]) S.add(w); }));
+  ["trevor","sara"].forEach(x=>(P[x].par||[]).forEach(pp=>{ (kids[pp]||[]).forEach(k=>S.add(k)); (P[pp]&&P[pp].par||[]).forEach(gp=>(kids[gp]||[]).forEach(k=>S.add(k))); }));
+  (kids.trevor||[]).forEach(k=>S.add(k));
+  return S;
+}
+function everyoneLayout(only){
+  const ok=x=>P[x] && (!only || only.has(x));
   const kids={}; PEOPLE.forEach(p=>(p.par||[]).forEach(i=>(kids[i]=kids[i]||[]).push(p.id)));
-  const sp={}; PEOPLE.forEach(p=>(p.sp||[]).forEach(s=>{ if(!P[s]) return; (sp[p.id]=sp[p.id]||new Set()).add(s); (sp[s]=sp[s]||new Set()).add(p.id); }));
+  const sp={}; PEOPLE.forEach(p=>(p.sp||[]).forEach(s=>{ if(!P[s]||!ok(s)||!ok(p.id)) return; (sp[p.id]=sp[p.id]||new Set()).add(s); (sp[s]=sp[s]||new Set()).add(p.id); }));
   // generation relative to Trevor; older generations get smaller numbers
   const g={trevor:0}, q=["trevor"], order={}; let n=0;
   while(q.length){ const id=q.shift(), p=P[id]; if(!p) continue; order[id]=n++;
     const nb=[]; (p.par||[]).forEach(x=>nb.push([x,g[id]-1])); [...(sp[id]||[])].forEach(x=>nb.push([x,g[id]])); (kids[id]||[]).forEach(x=>nb.push([x,g[id]+1]));
-    nb.forEach(([x,v])=>{ if(P[x] && g[x]===undefined){ g[x]=v; q.push(x); } });
+    nb.forEach(([x,v])=>{ if(ok(x) && g[x]===undefined){ g[x]=v; q.push(x); } });
   }
   // initial order: pedigree walk, father's side left of mother's side
   const seen=new Set(), seq=[];
-  (function walk(id){ if(seen.has(id)||!P[id]) return; seen.add(id); (P[id].par||[]).forEach(walk); seq.push(id); [...(sp[id]||[])].forEach(walk); (kids[id]||[]).forEach(walk); })("trevor");
+  (function walk(id){ if(seen.has(id)||!ok(id)) return; seen.add(id); (P[id].par||[]).forEach(walk); seq.push(id); [...(sp[id]||[])].forEach(walk); (kids[id]||[]).forEach(walk); })("trevor");
   const pos={}; seq.forEach((id,i)=>pos[id]=i);
   const rows={}; Object.keys(g).forEach(id=>(rows[g[id]]=rows[g[id]]||[]).push(id));
   const gens=Object.keys(rows).map(Number).sort((a,b)=>a-b);
@@ -2854,7 +2865,8 @@ function genLabel(r){
 }
 function drawEveryone(){
   const host=$("#everyone-svg"); if(!host || !window.d3) return;
-  const L=everyoneLayout(); EVT.L=L;
+  const L=everyoneLayout(EVT.view==='main'?mainFamily():null); EVT.L=L;
+  document.querySelectorAll('[data-evview]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.evview===EVT.view));
   const svg=d3.select(host); svg.selectAll("*").remove();
   const ids=Object.keys(L.g);
   const minX=Math.min(...ids.map(id=>L.X[id])), maxX=Math.max(...ids.map(id=>L.X[id]))+EV_W, minY=Math.min(...ids.map(id=>L.Y[id])), maxY=Math.max(...ids.map(id=>L.Y[id]))+EV_H;
@@ -2905,10 +2917,11 @@ function drawEveryone(){
   EVT.zoom=zoom; EVT.svg=svg; EVT.W=W; EVT.H=H; EVT.bounds=[minX-60,minY-130,maxX+60,maxY+40];
   EVT.built=true;
   // search list
-  $("#ev-list").innerHTML=ids.map(id=>P[id]).sort((a,b)=>a.name.localeCompare(b.name)).map(p=>`<option value="${esc(p.name)}${span(p)?" ("+esc(span(p))+")":""}"></option>`).join("");
+  $("#ev-list").innerHTML=PEOPLE.filter(p=>p.fam!=="X").sort((a,b)=>a.name.localeCompare(b.name)).map(p=>`<option value="${esc(p.name)}${span(p)?" ("+esc(span(p))+")":""}"></option>`).join("");
   $("#ev-count").textContent=`${ids.length} people · ${L.gens.length} generations`;
-  everyoneFocus("trevor",0.75,true);
+  if(EVT.view==="main") everyoneFitNow(); else everyoneFocus("trevor",0.75,true);
 }
+function everyoneFitNow(){ const [x0,y0,x1,y1]=EVT.bounds; const k=Math.min(EVT.W/(x1-x0),EVT.H/(y1-y0))*0.96; EVT.svg.call(EVT.zoom.transform,d3.zoomIdentity.translate(EVT.W/2,EVT.H/2).scale(Math.max(k,0.3)).translate(-(x0+x1)/2,-(y0+y1)/2)); }
 function everyoneFit(){
   const [x0,y0,x1,y1]=EVT.bounds; const k=Math.min(EVT.W/(x1-x0),EVT.H/(y1-y0))*0.96;
   EVT.svg.transition().duration(700).call(EVT.zoom.transform,d3.zoomIdentity.translate(EVT.W/2,EVT.H/2).scale(k).translate(-(x0+x1)/2,-(y0+y1)/2));
@@ -2928,6 +2941,7 @@ function everyoneHighlight(){
 }
 document.addEventListener("click",e=>{
   if(!EVT.built) return;
+  const vb=e.target.closest("[data-evview]"); if(vb){ EVT.view=vb.dataset.evview; EVT.sel=null; drawEveryone(); return; }
   if(e.target.closest("#ev-fit")) everyoneFit();
   else if(e.target.closest("#ev-me")){ everyoneSelect("trevor",false); everyoneFocus("trevor",0.75); }
   else if(e.target.closest("#ev-in")) EVT.svg.transition().duration(300).call(EVT.zoom.scaleBy,1.6);
@@ -2936,8 +2950,10 @@ document.addEventListener("click",e=>{
 document.addEventListener("change",e=>{
   if(e.target.id!=="ev-find" || !EVT.built) return;
   const v=e.target.value.replace(/\s*\([^)]*\)\s*$/,"").trim().toLowerCase();
-  const p=PEOPLE.find(x=>x.name.toLowerCase()===v) || PEOPLE.find(x=>EVT.L.g[x.id]!==undefined && (x.name+" "+(x.short||"")).toLowerCase().includes(v));
-  if(p){ everyoneSelect(p.id,true); }
+  const p=PEOPLE.find(x=>x.name.toLowerCase()===v) || PEOPLE.find(x=>(x.name+" "+(x.short||"")).toLowerCase().includes(v));
+  if(!p) return;
+  if(EVT.L.g[p.id]===undefined && EVT.view==="main"){ EVT.view="all"; drawEveryone(); }
+  if(EVT.L.g[p.id]!==undefined) everyoneSelect(p.id,true);
 });
 
 /* ---------- Directory ---------- */
