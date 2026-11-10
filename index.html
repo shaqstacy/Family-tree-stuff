@@ -91,6 +91,21 @@ nav.sections a:hover{color:var(--ink);background:var(--surface)}
 .iconbtn{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:5px 12px;font-size:.85rem;cursor:pointer;color:var(--ink)}
 .iconbtn:hover{border-color:var(--gold)}
 @media (max-width:760px){nav.sections{order:3;flex-basis:100%;overflow-x:auto;flex-wrap:nowrap;padding-bottom:4px}nav.sections a{white-space:nowrap}}
+/* the header slides away while scrolling down on phones and short screens, and comes back on scroll up */
+header.top{transition:transform .28s ease}
+header.top.tucked{transform:translateY(calc(-100% - env(safe-area-inset-top,0px)))}
+header.top:focus-within{transform:none}
+@media (prefers-reduced-motion: reduce){header.top{transition:none}}
+/* phone in landscape: one compact row */
+@media (max-height:500px){
+  header.top .wrap{min-height:44px;padding-block:4px;flex-wrap:nowrap;gap:10px}
+  .brand{font-size:1.05rem}
+  .brand svg{width:20px;height:20px}
+  nav.sections{order:0;flex-basis:auto;overflow-x:auto;flex-wrap:nowrap;padding-bottom:2px;scrollbar-width:none}
+  nav.sections::-webkit-scrollbar{display:none}
+  nav.sections a{white-space:nowrap;font-size:.88rem;padding:3px 8px}
+  header.top .tools{display:none}
+}
 
 /* ---------- hero ---------- */
 .hero{background:linear-gradient(180deg,var(--sky-top),var(--sky-bot) 70%,var(--bg));padding-block:56px 28px}
@@ -3297,6 +3312,18 @@ drawTree(); if(document.fonts&&document.fonts.ready) document.fonts.ready.then((
 { const hk=location.hash.replace(/^#tree-/,"").replace(/^#/,""); if(TREES[hk] && hk!=="stacy") setTree(hk); else if(hk==="zoglman") setTree("zs"); else drawFamilyRecord(); }
 { const sh=document.querySelector(".tree-shell"); if(sh.scrollWidth>sh.clientWidth) sh.scrollLeft=(sh.scrollWidth-sh.clientWidth)/2; }
 if(PUBLIC_EDITION){ const b=document.createElement("div"); b.className="pub-note"; b.textContent="Public edition: details of living family members are kept private."; document.body.appendChild(b); }
+(function(){
+  const hdr=document.querySelector("header.top"); if(!hdr) return;
+  const mq=matchMedia("(max-width:900px), (max-height:600px)");
+  let last=scrollY, ticking=false;
+  const update=()=>{ ticking=false; const y=scrollY;
+    if(!mq.matches || y<80) hdr.classList.remove("tucked");
+    else if(y>last+6) hdr.classList.add("tucked");
+    else if(y<last-6) hdr.classList.remove("tucked");
+    last=y; };
+  addEventListener("scroll",()=>{ if(!ticking){ ticking=true; requestAnimationFrame(update); } },{passive:true});
+  mq.addEventListener?.("change",update);
+})();
 drawEveryone(); drawBranches(); drawChapters(); drawTimeline(); drawMap(); showPlace(); drawDir(); drawNotes(); drawRecords(); drawGallery(); drawLine(); drawHeritage();
 </script>
 </body>
