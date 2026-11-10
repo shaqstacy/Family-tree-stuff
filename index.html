@@ -248,6 +248,9 @@ section{padding-block:64px}
 #everyone-svg.hl .ev-node.on{opacity:1}
 #everyone-svg.hl .ev-link.on{opacity:1;stroke-width:3}
 .ev-node.sel rect:first-child{stroke:var(--gold);stroke-width:4}
+.ev-node.mate rect:first-child{stroke:var(--gold);stroke-width:3;stroke-dasharray:6 3}
+#everyone-svg.hl .ev-tie{opacity:.2}
+#everyone-svg.hl .ev-tie.on{opacity:1;stroke-width:3;stroke:var(--gold)}
 #everyone-svg.far .ev-yrs{display:none}
 .ev-panel{position:absolute;left:10px;top:10px;width:min(340px,calc(100% - 70px));max-height:calc(100% - 20px);overflow:auto;background:var(--surface);border:1px solid var(--line);border-radius:8px;box-shadow:var(--shadow);padding:14px 16px;font-size:.92rem}
 .ev-panel h3{font-size:1.25rem;margin:2px 0 2px}
@@ -3024,7 +3027,26 @@ function everyoneLayout(only){
   // the two parent couples sit in the center, where the sides meet
   BR.rick=1.31; BR.annette=1.32; BR.clay=1.68; BR.ruthie=1.69;
   const br=x=>BR[x]===undefined?1.5:BR[x];
-  const brGap=(a,b)=>(sp[a]&&sp[a].has(b))?0:(Math.abs(br(a)-br(b))>=0.5?150:0);
+  // each person's family address: from the side's root, "0" = father's family, "1" = mother's family
+  const PATH={}, SK={}, ANC=new Set();
+  const upP=(id,pth)=>{ if(!ok(id)||PATH[id]!==undefined||g[id]===undefined) return; PATH[id]=pth; ANC.add(id); (P[id].par||[]).forEach((x,i)=>upP(x,pth+(i?"1":"0"))); };
+  roots.forEach(([r0])=>upP(r0,""));
+  const cpre=(a,b)=>{ let i=0; while(i<a.length&&i<b.length&&a[i]===b[i]) i++; return a.slice(0,i); };
+  const via={};
+  for(let it=0; it<12; it++) Object.keys(g).forEach(id=>{ if(PATH[id]!==undefined) return;
+    const ps=(P[id].par||[]).filter(x=>PATH[x]!==undefined);
+    if(ps.length){ PATH[id]=ps.map(x=>PATH[x]).reduce(cpre); via[id]="kid"; return; }
+    const s0=[...(sp[id]||[])].find(x=>PATH[x]!==undefined); if(s0){ PATH[id]=PATH[s0]; via[id]="sp:"+s0; return; }
+    const k0=(kids[id]||[]).find(x=>PATH[x]!==undefined); if(k0){ PATH[id]=PATH[k0]+((P[k0].par||[]).indexOf(id)===1?"1":"0"); via[id]="kid"; } });
+  Object.keys(g).forEach(id=>{ if(PATH[id]===undefined) PATH[id]=""; });
+  // sort key: a father sits below his own brothers and sisters, a mother above hers, so each couple meets in the middle
+  const skOf=id=>{ if(SK[id]!==undefined) return SK[id]; const pth=PATH[id];
+    if(ANC.has(id)) return SK[id]=pth+(pth.endsWith("0")?"~":pth.endsWith("1")?"!":"5");
+    if(via[id]&&via[id].startsWith("sp:")){ SK[id]=pth+"5"; return SK[id]=skOf(via[id].slice(3))+"z"; }
+    return SK[id]=pth+"5"; };
+  Object.keys(g).forEach(skOf);
+  const brGap=(a,b)=>{ if(sp[a]&&sp[a].has(b)) return 0; if(Math.abs(br(a)-br(b))>=0.5) return 150;
+    const pa=PATH[a]||"", pb=PATH[b]||""; if(pa===pb) return 0; return Math.max(16, 120-20*cpre(pa,pb).length); };
   // final sweeps oldest -> youngest: order by parents' position so siblings stay together;
   // people who married in follow their spouse
   for(let it=0; it<4; it++){
@@ -3038,6 +3060,12 @@ function everyoneLayout(only){
       bl.sort((x,y)=>x.v-y.v); rows[r]=bl.flatMap(x=>x.b); reindex();
     });
   }
+  // last pass: within each side, order every column by family address so each family stays in its own band
+  gens.forEach(r=>{
+    const bl=blocks(r).map((b,i)=>{ const bb=b.slice().sort((x,y)=>SK[x]<SK[y]?-1:SK[x]>SK[y]?1:0); return {b:bb, z:Math.min(...bb.map(br)), k:SK[bb[0]], i}; });
+    bl.sort((x,y)=> (Math.floor(x.z*10)-Math.floor(y.z*10)) || (x.k<y.k?-1:x.k>y.k?1:0) || (x.i-y.i));
+    rows[r]=bl.flatMap(x=>x.b); reindex();
+  });
   // x positions: pack, then pull toward parents/children, keeping order
   const X={}; gens.forEach(r=>{ let y=0; rows[r].forEach((id,i)=>{ if(i) y+=EV_H+EV_GAP+brGap(rows[r][i-1],id); X[id]=y; }); });
   for(let it=0; it<30; it++){
@@ -3195,9 +3223,11 @@ function everyonePanel(){
 }
 function everyoneHighlight(){
   const L=EVT.L, on=new Set();
-  if(EVT.sel){ const up=x=>{ if(on.has(x)||!P[x]) return; on.add(x); (P[x].par||[]).forEach(up); }; const down=x=>{ on.add(x); (L.kids[x]||[]).forEach(down); }; up(EVT.sel); down(EVT.sel); }
+  const mates=new Set(EVT.sel? [...(L.sp[EVT.sel]||[])] : []);
+  if(EVT.sel){ const up=x=>{ if(on.has(x)||!P[x]) return; on.add(x); (P[x].par||[]).forEach(up); }; const down=x=>{ on.add(x); (L.kids[x]||[]).forEach(down); }; up(EVT.sel); down(EVT.sel); mates.forEach(x=>on.add(x)); }
   d3.select("#everyone-svg").classed("hl",!!EVT.sel);
-  d3.selectAll("#everyone-svg .ev-node").classed("on",id=>on.has(id)).classed("sel",id=>id===EVT.sel);
+  d3.selectAll("#everyone-svg .ev-node").classed("on",id=>on.has(id)).classed("sel",id=>id===EVT.sel).classed("mate",id=>mates.has(id));
+  d3.selectAll("#everyone-svg .ev-tie").classed("on",d=>!!EVT.sel && ((d[0]===EVT.sel&&mates.has(d[1]))||(d[1]===EVT.sel&&mates.has(d[0]))));
   d3.selectAll("#everyone-svg .ev-link").classed("on",d=>d.par? (on.has(d.par)&&d.kids.some(k=>on.has(k))) : (on.has(d.id)&&d.ps.some(x=>on.has(x))));
   d3.selectAll("#everyone-svg .ev-join").classed("on",d=>d.kids.some(k=>on.has(k))&&d.ps.some(x=>on.has(x)));
 }
