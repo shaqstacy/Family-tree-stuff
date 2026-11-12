@@ -2448,58 +2448,408 @@ function drawChapters(){
   }
 }
 
-/* ---------- Narration (device text-to-speech; nothing leaves the device) ---------- */
-const NAR={ok:"speechSynthesis" in window && typeof SpeechSynthesisUtterance!=="undefined", id:null, all:false, parts:[], k:0, tok:0, paused:false, rate:1, voice:null};
+const NARRATION = {
+ "voice": "Lewis",
+ "ch": {
+  "today": {
+   "h": "63f59d7b",
+   "t": [
+    0.0,
+    3.2,
+    40.52,
+    67.46
+   ],
+   "d": 88.2
+  },
+  "oceana": {
+   "h": "ec61e440",
+   "t": [
+    0.0,
+    7.21,
+    33.79,
+    44.73,
+    83.8,
+    108.52,
+    135.29,
+    170.97
+   ],
+   "d": 193.4
+  },
+  "campbell": {
+   "h": "0f848261",
+   "t": [
+    0.0,
+    7.74,
+    50.06,
+    82.58
+   ],
+   "d": 100.4
+  },
+  "everage": {
+   "h": "73aec823",
+   "t": [
+    0.0,
+    9.38,
+    28.03,
+    47.95,
+    91.12
+   ],
+   "d": 120.9
+  },
+  "mabie": {
+   "h": "5a8efb7b",
+   "t": [
+    0.0,
+    7.95,
+    26.36,
+    33.55
+   ],
+   "d": 49.3
+  },
+  "fodder": {
+   "h": "0f268d74",
+   "t": [
+    0.0,
+    5.31,
+    19.34,
+    33.06
+   ],
+   "d": 47.2
+  },
+  "england": {
+   "h": "76e922ce",
+   "t": [
+    0.0,
+    6.93,
+    25.55,
+    37.83
+   ],
+   "d": 49.4
+  },
+  "bavaria": {
+   "h": "4ed652e2",
+   "t": [
+    0.0,
+    8.85,
+    37.26,
+    49.06
+   ],
+   "d": 73.1
+  },
+  "widow": {
+   "h": "594f1f40",
+   "t": [
+    0.0,
+    7.57,
+    33.27,
+    41.03
+   ],
+   "d": 62.8
+  },
+  "west": {
+   "h": "a08ee85c",
+   "t": [
+    0.0,
+    7.53,
+    23.61,
+    43.7
+   ],
+   "d": 58.9
+  },
+  "dugout": {
+   "h": "f6df7b67",
+   "t": [
+    0.0,
+    7.38,
+    24.55,
+    32.5,
+    44.12
+   ],
+   "d": 53.4
+  },
+  "parish": {
+   "h": "18b1a796",
+   "t": [
+    0.0,
+    6.4,
+    28.56,
+    56.86
+   ],
+   "d": 78.5
+  },
+  "mass": {
+   "h": "0ac9f9c7",
+   "t": [
+    0.0,
+    6.14,
+    19.85,
+    29.13,
+    49.93
+   ],
+   "d": 57.0
+  },
+  "bachelors": {
+   "h": "884ca455",
+   "t": [
+    0.0,
+    6.1,
+    26.55,
+    46.67
+   ],
+   "d": 62.4
+  },
+  "settlers": {
+   "h": "7d46e42d",
+   "t": [
+    0.0,
+    6.61,
+    24.91,
+    62.23
+   ],
+   "d": 76.4
+  },
+  "lt": {
+   "h": "dccdac79",
+   "t": [
+    0.0,
+    9.13,
+    22.31,
+    49.38
+   ],
+   "d": 67.1
+  },
+  "post": {
+   "h": "26e4539c",
+   "t": [
+    0.0,
+    8.64,
+    24.25
+   ],
+   "d": 46.8
+  },
+  "church": {
+   "h": "f36425b6",
+   "t": [
+    0.0,
+    6.91,
+    30.33,
+    47.9
+   ],
+   "d": 71.9
+  },
+  "lucy": {
+   "h": "cbe67413",
+   "t": [
+    0.0,
+    7.98,
+    23.76,
+    33.72
+   ],
+   "d": 49.0
+  },
+  "academy": {
+   "h": "c3608e80",
+   "t": [
+    0.0,
+    8.36,
+    24.46,
+    50.38
+   ],
+   "d": 62.3
+  },
+  "wildwest": {
+   "h": "de14ca48",
+   "t": [
+    0.0,
+    7.12,
+    22.67,
+    43.15,
+    77.78
+   ],
+   "d": 89.0
+  },
+  "home": {
+   "h": "0ef61903",
+   "t": [
+    0.0,
+    7.51,
+    37.13,
+    55.63
+   ],
+   "d": 67.7
+  },
+  "bud": {
+   "h": "16d4535d",
+   "t": [
+    0.0,
+    6.97,
+    19.77,
+    26.36,
+    72.04
+   ],
+   "d": 88.8
+  },
+  "kitchen": {
+   "h": "9992bfde",
+   "t": [
+    0.0,
+    3.13,
+    19.81,
+    44.19
+   ],
+   "d": 67.5
+  },
+  "teacher": {
+   "h": "4d1aeb84",
+   "t": [
+    0.0,
+    2.75,
+    21.13,
+    36.6
+   ],
+   "d": 54.2
+  },
+  "return": {
+   "h": "8fe850d0",
+   "t": [
+    0.0,
+    7.12,
+    20.03,
+    45.79
+   ],
+   "d": 56.8
+  },
+  "folz": {
+   "h": "89c1db6b",
+   "t": [
+    0.0,
+    7.81,
+    33.49,
+    45.77,
+    68.27,
+    88.62
+   ],
+   "d": 112.2
+  },
+  "neighbors": {
+   "h": "bb81e811",
+   "t": [
+    0.0,
+    8.45,
+    21.41,
+    57.05,
+    101.01,
+    125.84
+   ],
+   "d": 159.4
+  },
+  "lessons": {
+   "h": "ddc9b83c",
+   "t": [
+    0.0,
+    3.99,
+    8.87,
+    11.74,
+    15.35,
+    17.58,
+    20.16,
+    24.53
+   ],
+   "d": 33.7
+  }
+ }
+};
+/* ---------- Narration ----------
+   Recorded narration (tools/narrate.py, Piper, made offline) when a story has it;
+   otherwise the device's own text-to-speech. Nothing is sent to a voice service. */
+const NAR_TTS="speechSynthesis" in window && typeof SpeechSynthesisUtterance!=="undefined";
+const NAR={tts:NAR_TTS, ok:NAR_TTS || (typeof Audio!=="undefined" && typeof NARRATION!=="undefined" && Object.keys(NARRATION.ch||{}).length>0),
+  id:null, all:false, parts:[], k:0, tok:0, paused:false, rate:1, voice:null, useRec:true, audio:null, rec:false, els:[]};
+function narFnv(str){ let h=0x811c9dc5; for(let i=0;i<str.length;i++){ h^=str.charCodeAt(i); h=Math.imul(h,0x01000193)>>>0; } return ("0000000"+h.toString(16)).slice(-8); }
+function narSource(c){ return [c.title, c.when, ...c.body, (c.pull&&c.pull.q)||"", ...(c.lessons?LESSONS:[])].join("\n"); }
+function narRec(id){ if(typeof NARRATION==="undefined"||!NAR.useRec) return null; const r=(NARRATION.ch||{})[id], c=CHAPTERS.find(x=>x.id===id); return r&&c&&narFnv(narSource(c))===r.h ? r : null; }
 function narSpoken(t){ return String(t).replace(/(\d{4})s?\s*[–-]\s*(\d{4}|today)/g,"$1 to $2").replace(/\bc\.\s*/g,"about ").replace(/\s+&\s+/g," and ").replace(/[“”]/g,'"'); }
 function narSplit(t){ const out=[]; let cur=""; (t.match(/[^.!?]+[.!?]+["”’)]*\s*|[^.!?]+$/g)||[t]).forEach(s=>{ if((cur+s).length>220 && cur){ out.push(cur); cur=s; } else cur+=s; }); if(cur.trim()) out.push(cur); return out; }
+function narEls(id){ const art=document.getElementById("ch-"+id); return art? [art.querySelector("h3"), ...art.querySelectorAll("p.prose, ul.lessons li")] : []; }
 function narParts(id){
-  const art=document.getElementById("ch-"+id); if(!art) return [];
-  const c=CHAPTERS.find(x=>x.id===id), parts=[];
-  parts.push({el:art.querySelector("h3"), text:narSpoken(c.title+". "+(/\d/.test(c.when)?c.when+".":""))});
-  art.querySelectorAll("p.prose, ul.lessons li").forEach(el=>narSplit(narSpoken(el.textContent)).forEach(t=>parts.push({el,text:t})));
+  const c=CHAPTERS.find(x=>x.id===id), els=narEls(id), parts=[]; if(!els.length) return parts;
+  parts.push({el:els[0], text:narSpoken(c.title+". "+(/\d/.test(c.when)?c.when+".":""))});
+  els.slice(1).forEach(el=>narSplit(narSpoken(el.textContent)).forEach(t=>parts.push({el,text:t})));
   return parts;
 }
 function narClear(){ document.querySelectorAll(".chapter .speaking").forEach(e=>e.classList.remove("speaking")); }
+function narMark(el){ if(!el || el.classList.contains("speaking")) return; narClear(); el.classList.add("speaking"); const r=el.getBoundingClientRect(); if(r.top<80 || r.bottom>innerHeight-110) el.scrollIntoView({behavior:"smooth",block:"center"}); }
 function narUI(){
   const bar=$("#nar-bar"); if(!bar) return;
   bar.hidden=!NAR.id;
   if(NAR.id){ const c=CHAPTERS.find(x=>x.id===NAR.id), sd=chMeta(c)[0]; $("#nar-title").textContent=c.title; $("#nar-side").textContent=(Object.fromEntries(CH_SIDES)[sd]||"").split(" · ")[0]+(NAR.all?" · playing all":"");
     const t=$("#nar-toggle"); t.textContent=NAR.paused?"▶":"⏸"; t.setAttribute("aria-label",NAR.paused?"Resume":"Pause"); t.title=NAR.paused?"Resume":"Pause"; }
 }
+function narHalt(){ NAR.tok++; if(NAR.tts) speechSynthesis.cancel(); if(NAR.audio){ NAR.audio.pause(); } narClear(); }
+function narAfter(){ // a story finished
+  if(NAR.all){ const ORD=chOrdered(), i=ORD.findIndex(c=>c.id===NAR.id); if(i>=0 && i<ORD.length-1){ narStart(ORD[i+1].id,true); return; } }
+  narStop();
+}
 function narStart(id, all, k){
-  speechSynthesis.cancel(); narClear();
-  NAR.id=id; NAR.all=!!all; NAR.parts=narParts(id); NAR.k=k||0; NAR.paused=false; NAR.tok++;
-  narUI(); narNext(NAR.tok);
+  narHalt();
+  NAR.id=id; NAR.all=!!all; NAR.paused=false; const tok=NAR.tok;
+  const r=narRec(id);
+  if(r){
+    NAR.rec=true; NAR.els=narEls(id); NAR.t=r.t;
+    if(!NAR.audio){ NAR.audio=new Audio(); NAR.audio.preload="auto";
+      NAR.audio.addEventListener("timeupdate",()=>{ if(!NAR.rec||!NAR.id) return; const ct=NAR.audio.currentTime; let i=0; while(i+1<NAR.t.length && NAR.t[i+1]<=ct+0.05) i++; narMark(NAR.els[Math.min(i,NAR.els.length-1)]); });
+      NAR.audio.addEventListener("ended",()=>{ if(NAR.rec&&NAR.id) narAfter(); });
+      NAR.audio.addEventListener("error",()=>{ if(!NAR.rec||!NAR.id) return; NAR.rec=false; if(NAR.tts){ NAR.parts=narParts(NAR.id); NAR.k=0; narNext(NAR.tok); } else narStop(); }); }
+    const src="media/narration/"+id+".mp3";
+    if(!NAR.audio.src.endsWith(src)) NAR.audio.src=src;
+    const seek=()=>{ try{ NAR.audio.currentTime=(r.t[k||0]||0); }catch(e){} };
+    if(NAR.audio.readyState>=1) seek(); else NAR.audio.addEventListener("loadedmetadata",seek,{once:true});
+    NAR.audio.playbackRate=NAR.rate;
+    narMark(NAR.els[k||0]);
+    const pr=NAR.audio.play(); if(pr&&pr.catch) pr.catch(()=>{ if(tok===NAR.tok){ NAR.paused=true; narUI(); } });
+  } else if(NAR.tts){
+    NAR.rec=false; NAR.parts=narParts(id); NAR.k=0;
+    if(k){ const el=narEls(id)[k]; const j=NAR.parts.findIndex(x=>x.el===el); if(j>0) NAR.k=j; }
+    narNext(tok);
+  } else { narStop(); return; }
+  narUI();
 }
 function narNext(tok){
   if(tok!==NAR.tok) return;
-  narClear();
-  if(NAR.k>=NAR.parts.length){ if(NAR.all){ const ORD=chOrdered(), i=ORD.findIndex(c=>c.id===NAR.id); if(i>=0 && i<ORD.length-1){ narStart(ORD[i+1].id,true); return; } } narStop(); return; }
+  if(NAR.k>=NAR.parts.length){ narAfter(); return; }
   const part=NAR.parts[NAR.k], u=new SpeechSynthesisUtterance(part.text);
   u.rate=NAR.rate; if(NAR.voice) u.voice=NAR.voice; u.lang=(NAR.voice&&NAR.voice.lang)||"en-US";
-  part.el.classList.add("speaking");
-  const r=part.el.getBoundingClientRect(); if(r.top<80 || r.bottom>innerHeight-110) part.el.scrollIntoView({behavior:"smooth",block:"center"});
+  narMark(part.el);
   u.onend=()=>{ if(tok!==NAR.tok) return; NAR.k++; narNext(tok); };
   u.onerror=e=>{ if(tok!==NAR.tok || e.error==="interrupted" || e.error==="canceled") return; NAR.k++; narNext(tok); };
   speechSynthesis.speak(u);
 }
-function narStop(){ NAR.tok++; NAR.id=null; NAR.paused=false; speechSynthesis.cancel(); narClear(); narUI(); }
-function narToggle(){ if(!NAR.id) return; if(NAR.paused){ NAR.paused=false; speechSynthesis.resume(); if(!speechSynthesis.speaking){ narNext(NAR.tok); } } else { NAR.paused=true; speechSynthesis.pause(); } narUI(); }
+function narStop(){ narHalt(); NAR.id=null; NAR.paused=false; narUI(); }
+function narToggle(){
+  if(!NAR.id) return;
+  if(NAR.rec){ if(NAR.paused){ NAR.paused=false; NAR.audio.play(); } else { NAR.paused=true; NAR.audio.pause(); } }
+  else if(NAR.paused){ NAR.paused=false; speechSynthesis.resume(); if(!speechSynthesis.speaking) narNext(NAR.tok); }
+  else { NAR.paused=true; speechSynthesis.pause(); }
+  narUI();
+}
 function narJump(d){ if(!NAR.id) return; const ORD=chOrdered(), i=ORD.findIndex(c=>c.id===NAR.id), j=i+d; if(j<0||j>=ORD.length) return; narStart(ORD[j].id,NAR.all); }
+function narCurrentEl(){ if(!NAR.id) return 0; if(NAR.rec){ const ct=NAR.audio.currentTime; let i=0; while(i+1<NAR.t.length && NAR.t[i+1]<=ct) i++; return i; } const el=(NAR.parts[NAR.k]||{}).el; return Math.max(0,narEls(NAR.id).indexOf(el)); }
 function narVoices(){
-  const sel=$("#nar-voice"); if(!sel || !NAR.ok) return;
-  const vs=speechSynthesis.getVoices().filter(v=>/^en/i.test(v.lang));
-  if(!vs.length){ sel.closest("label").hidden=true; return; } sel.closest("label").hidden=false;
-  const pick=vs.find(v=>/natural|premium|enhanced|samantha|google us/i.test(v.name)) || vs.find(v=>v.default) || vs[0];
+  const sel=$("#nar-voice"); if(!sel) return;
+  const hasRec=typeof NARRATION!=="undefined" && NARRATION.voice && Object.keys(NARRATION.ch||{}).length;
+  const vs=NAR.tts? speechSynthesis.getVoices().filter(v=>/^en/i.test(v.lang)) : [];
   let saved=null; try{ saved=localStorage.getItem("narVoice"); }catch(e){}
-  NAR.voice=vs.find(v=>v.name===saved)||NAR.voice||pick;
-  sel.innerHTML=vs.map(v=>`<option value="${esc(v.name)}"${NAR.voice&&v.name===NAR.voice.name?" selected":""}>${esc(v.name.replace(/\s*\(.*\)$/,""))}</option>`).join("");
+  NAR.useRec=!!hasRec && (saved===null || saved==="__rec" || !vs.some(v=>v.name===saved));
+  const pick=vs.find(v=>/natural|premium|enhanced|samantha|google us/i.test(v.name)) || vs.find(v=>v.default) || vs[0];
+  NAR.voice=vs.find(v=>v.name===saved)||pick||null;
+  const opts=(hasRec?[`<option value="__rec"${NAR.useRec?" selected":""}>${esc(NARRATION.voice)} (recorded)</option>`]:[]).concat(vs.map(v=>`<option value="${esc(v.name)}"${!NAR.useRec&&NAR.voice&&v.name===NAR.voice.name?" selected":""}>${esc(v.name.replace(/\s*\(.*\)$/,""))}</option>`));
+  sel.innerHTML=opts.join(""); sel.closest("label").hidden=opts.length<2;
 }
 if(NAR.ok){
-  narVoices(); if("onvoiceschanged" in speechSynthesis) speechSynthesis.addEventListener("voiceschanged",narVoices);
   try{ const r=parseFloat(localStorage.getItem("narRate")); if(r) NAR.rate=r; }catch(e){}
-  document.addEventListener("DOMContentLoaded",()=>{ const s=$("#nar-start"); if(s) s.hidden=false; const r=$("#nar-rate"); if(r) r.value=String(NAR.rate); });
-  const s0=document.getElementById("nar-start"); if(s0) s0.hidden=false;
+  narVoices(); if(NAR.tts && "onvoiceschanged" in speechSynthesis) speechSynthesis.addEventListener("voiceschanged",narVoices);
+  const s0=document.getElementById("nar-start"); if(s0){ s0.hidden=false; const hint=s0.querySelector(".nar-hint"); if(hint && typeof NARRATION!=="undefined" && NARRATION.voice) hint.textContent="Narrated by "+NARRATION.voice+", a recorded storyteller voice. Pick another under Voice."; }
+  const rs=document.getElementById("nar-rate"); if(rs) rs.value=String(NAR.rate);
   document.addEventListener("click",e=>{
     const b=e.target.closest("[data-nar]"); if(!b) return;
     const a=b.dataset.nar;
@@ -2511,10 +2861,13 @@ if(NAR.ok){
     else if(a==="next") narJump(1);
   });
   document.addEventListener("change",e=>{
-    if(e.target.id==="nar-rate"){ NAR.rate=parseFloat(e.target.value)||1; try{ localStorage.setItem("narRate",NAR.rate); }catch(_){} if(NAR.id && !NAR.paused)narStart(NAR.id,NAR.all,NAR.k); }
-    if(e.target.id==="nar-voice"){ NAR.voice=speechSynthesis.getVoices().find(v=>v.name===e.target.value)||null; try{ localStorage.setItem("narVoice",e.target.value); }catch(_){} if(NAR.id && !NAR.paused)narStart(NAR.id,NAR.all,NAR.k); }
+    if(e.target.id==="nar-rate"){ NAR.rate=parseFloat(e.target.value)||1; try{ localStorage.setItem("narRate",NAR.rate); }catch(_){}
+      if(NAR.id && NAR.rec) NAR.audio.playbackRate=NAR.rate; else if(NAR.id && !NAR.paused) narStart(NAR.id,NAR.all,narCurrentEl()); }
+    if(e.target.id==="nar-voice"){ const v=e.target.value; try{ localStorage.setItem("narVoice",v); }catch(_){}
+      NAR.useRec= v==="__rec"; if(!NAR.useRec && NAR.tts) NAR.voice=speechSynthesis.getVoices().find(x=>x.name===v)||NAR.voice;
+      if(NAR.id && !NAR.paused) narStart(NAR.id,NAR.all,narCurrentEl()); }
   });
-  addEventListener("pagehide",()=>speechSynthesis.cancel());
+  addEventListener("pagehide",()=>{ if(NAR.tts) speechSynthesis.cancel(); if(NAR.audio) NAR.audio.pause(); });
 }
 
 /* ---------- Timeline ---------- */
