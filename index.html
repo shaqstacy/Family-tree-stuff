@@ -171,6 +171,23 @@ section{padding-block:64px}
 .toc a{color:var(--muted);text-decoration:none;font-size:.95rem;display:block;line-height:1.3;padding:2px 0}
 .toc a:hover,.toc a.on{color:var(--gold)}
 .toc .date{font-size:.75rem;display:block;color:var(--muted);opacity:.8}
+.toc-grp{font-family:var(--type);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin:14px 0 2px}
+.toc-grp:first-child{margin-top:0}
+.ch-grp{font-family:var(--type);font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);border-bottom:2px solid var(--gold);padding-bottom:6px;margin:0 0 30px}
+.ch-listen{margin:-4px 0 14px;font-size:.85rem}
+.chapter .speaking{background:color-mix(in srgb,var(--gold) 16%,transparent);border-radius:6px;box-shadow:0 0 0 6px color-mix(in srgb,var(--gold) 16%,transparent)}
+.nar-start{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:14px}
+.nar-hint{font-size:.85rem}
+.nar-bar{position:fixed;left:50%;transform:translateX(-50%);bottom:14px;z-index:60;width:min(760px,calc(100vw - 32px));background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:10px 14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.nar-now{flex:1 1 200px;min-width:0;display:flex;flex-direction:column}
+.nar-now strong{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nar-now .eyebrow{margin:0;font-size:.68rem}
+.nar-ctl{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.nar-b{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer;font-size:1rem;line-height:1}
+.nar-b.nar-main{background:var(--gold);border-color:var(--gold);color:#1b1408}
+.nar-sel{font-size:.8rem;color:var(--muted);display:flex;align-items:center;gap:4px}
+.nar-sel select{max-width:150px;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:3px 4px}
+@media (max-width:600px){.nar-voice{display:none}}
 .chapter{padding-bottom:42px;margin-bottom:42px;border-bottom:1px solid var(--line);min-width:0}
 .chapter:last-child{border-bottom:0}
 .chapter h3{font-size:clamp(1.6rem,3vw,2.1rem);margin:6px 0 14px}
@@ -630,7 +647,22 @@ footer{border-top:1px solid var(--line);padding-block:30px;color:var(--muted);fo
         <div>
           <div class="eyebrow">The stories</div>
           <h2>How the family got here</h2>
-          <p>Told in order, drawn from the family memoir “Stallings Family History” and the eulogy written for Theresa in 2009. Quotations are from those papers.</p>
+          <p>Grouped by family: Trevor and Sara first, then each of their mothers’ and fathers’ sides, and in order of time within each. Much of the Waterflow story is drawn from the family memoir “Stallings Family History” and the eulogy written for Theresa in 2009; quotations are from those papers.</p>
+          <div class="nar-start" id="nar-start" hidden>
+            <button type="button" class="btn" data-nar="all">▶ Listen to all the stories</button>
+            <span class="muted nar-hint">Read aloud by your device’s own voice.</span>
+          </div>
+        </div>
+      </div>
+      <div class="nar-bar" id="nar-bar" hidden role="region" aria-label="Story narration">
+        <div class="nar-now"><span class="eyebrow" id="nar-side"></span><strong id="nar-title"></strong></div>
+        <div class="nar-ctl">
+          <button type="button" class="nar-b" data-nar="prev" aria-label="Previous story" title="Previous story">⏮</button>
+          <button type="button" class="nar-b nar-main" data-nar="toggle" id="nar-toggle" aria-label="Pause" title="Pause">⏸</button>
+          <button type="button" class="nar-b" data-nar="next" aria-label="Next story" title="Next story">⏭</button>
+          <button type="button" class="nar-b" data-nar="stop" aria-label="Stop" title="Stop">⏹</button>
+          <label class="nar-sel">Speed <select id="nar-rate"><option value="0.85">Slow</option><option value="1" selected>Normal</option><option value="1.15">Faster</option><option value="1.3">Fast</option></select></label>
+          <label class="nar-sel nar-voice">Voice <select id="nar-voice"></select></label>
         </div>
       </div>
       <div class="chapters">
@@ -2390,10 +2422,19 @@ function drawBranches(){
 }
 
 /* ---------- Chapters ---------- */
+// story order: Trevor & Sara, then each mother's and father's side; by time within each
+const CH_SIDES=[["home","Trevor & Sara"],["tm","Trevor’s mother’s side · Folz, Zoglman & Stallings"],["tf","Trevor’s father’s side · Stacy & Prichard"],["sm","Sara’s mother’s side · Davis, Francis & Adkins"],["sf","Sara’s father’s side · Campbell & Hively"]];
+const CH_META={today:["home",2026], oceana:["tf",1919], everage:["tf",1775], campbell:["sf",1935], mabie:["sm",1937], fodder:["sm",1950],
+  england:["tm",1600], bavaria:["tm",1833], neighbors:["tm",1840], widow:["tm",1873], lt:["tm",1886], parish:["tm",1900], west:["tm",1906], dugout:["tm",1909], mass:["tm",1912.1], bachelors:["tm",1912.2], settlers:["tm",1914], post:["tm",1914.5], lucy:["tm",1915], church:["tm",1917], academy:["tm",1918], wildwest:["tm",1919], home:["tm",1932], bud:["tm",1938], folz:["tm",1943], kitchen:["tm",1960], teacher:["tm",1965], return:["tm",1976], lessons:["tm",2009]};
+function chMeta(c){ const m=CH_META[c.id]; if(m) return m; const y=(String(c.when).match(/\d{4}/)||[])[0]; return ["home", y?+y:3000]; }
+function chOrdered(){ const si=Object.fromEntries(CH_SIDES.map(([k],i)=>[k,i])); return CHAPTERS.map((c,i)=>({c,i})).sort((a,b)=>{ const A=chMeta(a.c), B=chMeta(b.c); return (si[A[0]]-si[B[0]]) || (A[1]-B[1]) || (a.i-b.i); }).map(x=>x.c); }
 function drawChapters(){
-  $("#toc").innerHTML = CHAPTERS.map(c=>`<li><a href="#ch-${c.id}" data-ch="${c.id}"><span class="date">${esc(c.when)}</span>${esc(c.title)}</a></li>`).join("");
-  $("#chapters").innerHTML = CHAPTERS.map(c=>{
-    let h = `<article class="chapter" id="ch-${c.id}"><div class="eyebrow">${esc(c.when)}</div><h3>${esc(c.title)}</h3>`;
+  const ORD=chOrdered(), sideName=Object.fromEntries(CH_SIDES);
+  let lastT=null; $("#toc").innerHTML = ORD.map(c=>{ const sd=chMeta(c)[0]; const hd= sd!==lastT? `<li class="toc-grp">${esc(sideName[sd].split(" · ")[0])}</li>` : ""; lastT=sd; return hd+`<li><a href="#ch-${c.id}" data-ch="${c.id}"><span class="date">${esc(c.when)}</span>${esc(c.title)}</a></li>`; }).join("");
+  let lastC=null;
+  $("#chapters").innerHTML = ORD.map(c=>{
+    const sd=chMeta(c)[0]; const hd= sd!==lastC? `<div class="ch-grp">${esc(sideName[sd])}</div>` : ""; lastC=sd;
+    let h = hd+`<article class="chapter" id="ch-${c.id}"><div class="eyebrow">${esc(c.when)}</div><h3>${esc(c.title)}</h3>`+(NAR.ok?`<button type="button" class="chip ch-listen" data-nar="one" data-narch="${c.id}">▶ Listen</button>`:"");
     c.body.forEach((para,i)=>{ h+=`<p class="prose">${esc(para)}</p>`; if(i===0&&c.pull) h+=`<p class="pull prose">“${esc(c.pull.q)}”<small>${esc(c.pull.by)}</small></p>`; });
     if(c.lessons) h+=`<ul class="lessons prose">${LESSONS.map(l=>`<li>${esc(l)}</li>`).join("")}</ul>`;
     if(c.who&&c.who.length) h+=`<div class="chips">${c.who.filter(id=>P[id]).map(id=>`<button class="chip" type="button" data-p="${id}"><span class="sw" style="background:${FAM[P[id].fam].color}"></span>${esc(P[id].short||P[id].name)}</button>`).join("")}</div>`;
@@ -2405,6 +2446,75 @@ function drawChapters(){
     const io = new IntersectionObserver(es=>{es.forEach(e=>{ if(e.isIntersecting){ links.forEach(a=>a.classList.toggle("on",a.dataset.ch===e.target.id.slice(3))); } })},{rootMargin:"-30% 0px -60% 0px"});
     document.querySelectorAll(".chapter").forEach(c=>io.observe(c));
   }
+}
+
+/* ---------- Narration (device text-to-speech; nothing leaves the device) ---------- */
+const NAR={ok:"speechSynthesis" in window && typeof SpeechSynthesisUtterance!=="undefined", id:null, all:false, parts:[], k:0, tok:0, paused:false, rate:1, voice:null};
+function narSpoken(t){ return String(t).replace(/(\d{4})s?\s*[–-]\s*(\d{4}|today)/g,"$1 to $2").replace(/\bc\.\s*/g,"about ").replace(/\s+&\s+/g," and ").replace(/[“”]/g,'"'); }
+function narSplit(t){ const out=[]; let cur=""; (t.match(/[^.!?]+[.!?]+["”’)]*\s*|[^.!?]+$/g)||[t]).forEach(s=>{ if((cur+s).length>220 && cur){ out.push(cur); cur=s; } else cur+=s; }); if(cur.trim()) out.push(cur); return out; }
+function narParts(id){
+  const art=document.getElementById("ch-"+id); if(!art) return [];
+  const c=CHAPTERS.find(x=>x.id===id), parts=[];
+  parts.push({el:art.querySelector("h3"), text:narSpoken(c.title+". "+(/\d/.test(c.when)?c.when+".":""))});
+  art.querySelectorAll("p.prose, ul.lessons li").forEach(el=>narSplit(narSpoken(el.textContent)).forEach(t=>parts.push({el,text:t})));
+  return parts;
+}
+function narClear(){ document.querySelectorAll(".chapter .speaking").forEach(e=>e.classList.remove("speaking")); }
+function narUI(){
+  const bar=$("#nar-bar"); if(!bar) return;
+  bar.hidden=!NAR.id;
+  if(NAR.id){ const c=CHAPTERS.find(x=>x.id===NAR.id), sd=chMeta(c)[0]; $("#nar-title").textContent=c.title; $("#nar-side").textContent=(Object.fromEntries(CH_SIDES)[sd]||"").split(" · ")[0]+(NAR.all?" · playing all":"");
+    const t=$("#nar-toggle"); t.textContent=NAR.paused?"▶":"⏸"; t.setAttribute("aria-label",NAR.paused?"Resume":"Pause"); t.title=NAR.paused?"Resume":"Pause"; }
+}
+function narStart(id, all, k){
+  speechSynthesis.cancel(); narClear();
+  NAR.id=id; NAR.all=!!all; NAR.parts=narParts(id); NAR.k=k||0; NAR.paused=false; NAR.tok++;
+  narUI(); narNext(NAR.tok);
+}
+function narNext(tok){
+  if(tok!==NAR.tok) return;
+  narClear();
+  if(NAR.k>=NAR.parts.length){ if(NAR.all){ const ORD=chOrdered(), i=ORD.findIndex(c=>c.id===NAR.id); if(i>=0 && i<ORD.length-1){ narStart(ORD[i+1].id,true); return; } } narStop(); return; }
+  const part=NAR.parts[NAR.k], u=new SpeechSynthesisUtterance(part.text);
+  u.rate=NAR.rate; if(NAR.voice) u.voice=NAR.voice; u.lang=(NAR.voice&&NAR.voice.lang)||"en-US";
+  part.el.classList.add("speaking");
+  const r=part.el.getBoundingClientRect(); if(r.top<80 || r.bottom>innerHeight-110) part.el.scrollIntoView({behavior:"smooth",block:"center"});
+  u.onend=()=>{ if(tok!==NAR.tok) return; NAR.k++; narNext(tok); };
+  u.onerror=e=>{ if(tok!==NAR.tok || e.error==="interrupted" || e.error==="canceled") return; NAR.k++; narNext(tok); };
+  speechSynthesis.speak(u);
+}
+function narStop(){ NAR.tok++; NAR.id=null; NAR.paused=false; speechSynthesis.cancel(); narClear(); narUI(); }
+function narToggle(){ if(!NAR.id) return; if(NAR.paused){ NAR.paused=false; speechSynthesis.resume(); if(!speechSynthesis.speaking){ narNext(NAR.tok); } } else { NAR.paused=true; speechSynthesis.pause(); } narUI(); }
+function narJump(d){ if(!NAR.id) return; const ORD=chOrdered(), i=ORD.findIndex(c=>c.id===NAR.id), j=i+d; if(j<0||j>=ORD.length) return; narStart(ORD[j].id,NAR.all); }
+function narVoices(){
+  const sel=$("#nar-voice"); if(!sel || !NAR.ok) return;
+  const vs=speechSynthesis.getVoices().filter(v=>/^en/i.test(v.lang));
+  if(!vs.length){ sel.closest("label").hidden=true; return; } sel.closest("label").hidden=false;
+  const pick=vs.find(v=>/natural|premium|enhanced|samantha|google us/i.test(v.name)) || vs.find(v=>v.default) || vs[0];
+  let saved=null; try{ saved=localStorage.getItem("narVoice"); }catch(e){}
+  NAR.voice=vs.find(v=>v.name===saved)||NAR.voice||pick;
+  sel.innerHTML=vs.map(v=>`<option value="${esc(v.name)}"${NAR.voice&&v.name===NAR.voice.name?" selected":""}>${esc(v.name.replace(/\s*\(.*\)$/,""))}</option>`).join("");
+}
+if(NAR.ok){
+  narVoices(); if("onvoiceschanged" in speechSynthesis) speechSynthesis.addEventListener("voiceschanged",narVoices);
+  try{ const r=parseFloat(localStorage.getItem("narRate")); if(r) NAR.rate=r; }catch(e){}
+  document.addEventListener("DOMContentLoaded",()=>{ const s=$("#nar-start"); if(s) s.hidden=false; const r=$("#nar-rate"); if(r) r.value=String(NAR.rate); });
+  const s0=document.getElementById("nar-start"); if(s0) s0.hidden=false;
+  document.addEventListener("click",e=>{
+    const b=e.target.closest("[data-nar]"); if(!b) return;
+    const a=b.dataset.nar;
+    if(a==="all") narStart(chOrdered()[0].id,true);
+    else if(a==="one") narStart(b.dataset.narch,false);
+    else if(a==="toggle") narToggle();
+    else if(a==="stop") narStop();
+    else if(a==="prev") narJump(-1);
+    else if(a==="next") narJump(1);
+  });
+  document.addEventListener("change",e=>{
+    if(e.target.id==="nar-rate"){ NAR.rate=parseFloat(e.target.value)||1; try{ localStorage.setItem("narRate",NAR.rate); }catch(_){} if(NAR.id && !NAR.paused)narStart(NAR.id,NAR.all,NAR.k); }
+    if(e.target.id==="nar-voice"){ NAR.voice=speechSynthesis.getVoices().find(v=>v.name===e.target.value)||null; try{ localStorage.setItem("narVoice",e.target.value); }catch(_){} if(NAR.id && !NAR.paused)narStart(NAR.id,NAR.all,NAR.k); }
+  });
+  addEventListener("pagehide",()=>speechSynthesis.cancel());
 }
 
 /* ---------- Timeline ---------- */
