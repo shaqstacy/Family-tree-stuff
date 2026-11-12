@@ -60,11 +60,14 @@ const mv = block('MOVES'); mv.put(mv.val.map(m=>({...m, legs:m.legs.filter(l=>!m
 // Mark the edition
 h = h.replace('const PUBLIC_EDITION = false;', 'const PUBLIC_EDITION = true;');
 
+// Recorded narration reads the private stories aloud, living people included: leave it out here
+if(/const NARRATION = /.test(h)){ const na=block('NARRATION'); na.put({voice:null, ch:{}}); }
+
 // Write site + only the media still referenced
 fs.rmSync(OUT, { recursive:true, force:true });
 fs.mkdirSync(path.join(OUT,'media'), { recursive:true });
 fs.writeFileSync(path.join(OUT,'index.html'), h);
 const used = new Set([...h.matchAll(/media\/[A-Za-z0-9._-]+/g)].map(m=>m[0]));
-used.forEach(f=>{ const src=path.join(ROOT,f); if(fs.existsSync(src)) fs.copyFileSync(src, path.join(OUT,f)); });
+used.forEach(f=>{ const src=path.join(ROOT,f); if(fs.existsSync(src) && fs.statSync(src).isFile()) fs.copyFileSync(src, path.join(OUT,f)); });
 fs.writeFileSync(path.join(OUT,'README.md'), '# Stacy Family Tree (public edition)\n\nGenerated from the private family-tree-stuff repository by tools/build_public.js. Details of living family members (dates, places, photos and notes) are removed. Do not edit by hand.\n');
 console.log(JSON.stringify({ living: living.size, media: used.size, tokens: [...liveTok].length, out: OUT }));
